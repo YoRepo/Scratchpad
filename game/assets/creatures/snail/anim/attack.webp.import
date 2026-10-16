@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dn210iq2jkhw6"
-path="res://.godot/imported/crouch.png-c7013b81ea6769c856a3cb11a86cf10d.ctex"
+uid="uid://vxh15k2yoxmp"
+path="res://.godot/imported/attack.webp-e0ab8bc0bc3941811e06387faad6c864.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/crouch.png"
-dest_files=["res://.godot/imported/crouch.png-c7013b81ea6769c856a3cb11a86cf10d.ctex"]
+source_file="res://assets/creatures/snail/anim/attack.webp"
+dest_files=["res://.godot/imported/attack.webp-e0ab8bc0bc3941811e06387faad6c864.ctex"]
 
 [params]
 

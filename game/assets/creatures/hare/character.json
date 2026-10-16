@@ -1,0 +1,11 @@
+{
+ "world_height": 46,
+ "source_height": 310,
+ "frame_scale": 0.4,
+ "animations": [
+  "idle",
+  "move",
+  "attack",
+  "die"
+ ]
+}

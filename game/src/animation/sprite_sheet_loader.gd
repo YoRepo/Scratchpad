@@ -32,7 +32,7 @@ static func load_character(folder: String) -> CharacterSet:
 
 static func _add_animation(character_set: CharacterSet, folder: String, name: String) -> bool:
 	var meta := _read_json(folder.path_join(name + ".json"))
-	var texture := load(folder.path_join(name + ".png")) as Texture2D
+	var texture := _load_sheet(folder, name)
 	if meta.is_empty() or texture == null:
 		push_warning("SpriteSheetLoader: missing animation '%s' in %s" % [name, folder])
 		return false
@@ -52,6 +52,15 @@ static func _add_animation(character_set: CharacterSet, folder: String, name: St
 	var origin: Array = meta.get("origin", [width / 2.0, height])
 	character_set.origins[animation] = Vector2(float(origin[0]), float(origin[1]))
 	return true
+
+
+## Sheets ship as WebP (tools/art/finalize_sheets.py); PNG is the pipeline's working format.
+static func _load_sheet(folder: String, name: String) -> Texture2D:
+	for extension in ["webp", "png"]:
+		var path := folder.path_join("%s.%s" % [name, extension])
+		if ResourceLoader.exists(path):
+			return load(path) as Texture2D
+	return null
 
 
 static func _read_json(path: String) -> Dictionary:

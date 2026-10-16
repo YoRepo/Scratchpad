@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm2dskbgiymhi"
-path="res://.godot/imported/climb.png-b732c49418a16cfd4bb16160a5d1459e.ctex"
+uid="uid://c6l4tobfrojlj"
+path="res://.godot/imported/idle.webp-4233c00c5aabde0e377bc8d5abcb8d84.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/climb.png"
-dest_files=["res://.godot/imported/climb.png-b732c49418a16cfd4bb16160a5d1459e.ctex"]
+source_file="res://assets/creatures/hare/anim/idle.webp"
+dest_files=["res://.godot/imported/idle.webp-4233c00c5aabde0e377bc8d5abcb8d84.ctex"]
 
 [params]
 

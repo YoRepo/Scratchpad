@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bj0h1274k8l6o"
-path="res://.godot/imported/die.png-7a8df411cd71313b632e853b87be2953.ctex"
+uid="uid://hnqdjnjt8lh"
+path="res://.godot/imported/jump.webp-dc18a709b66172fe43a533e81b4004d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/die.png"
-dest_files=["res://.godot/imported/die.png-7a8df411cd71313b632e853b87be2953.ctex"]
+source_file="res://assets/characters/knight/anim/jump.webp"
+dest_files=["res://.godot/imported/jump.webp-dc18a709b66172fe43a533e81b4004d8.ctex"]
 
 [params]
 

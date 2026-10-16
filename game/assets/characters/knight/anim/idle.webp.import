@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chgf7rnxxpubq"
-path="res://.godot/imported/walk.png-5fb43ed481e4ceccc854a6a264cbe22f.ctex"
+uid="uid://clhnri1ufdv7f"
+path="res://.godot/imported/idle.webp-b7d9db96d0046c94ecef21d1f56e7b4f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/walk.png"
-dest_files=["res://.godot/imported/walk.png-5fb43ed481e4ceccc854a6a264cbe22f.ctex"]
+source_file="res://assets/characters/knight/anim/idle.webp"
+dest_files=["res://.godot/imported/idle.webp-b7d9db96d0046c94ecef21d1f56e7b4f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2w2aomw6s7k6"
-path="res://.godot/imported/attack.png-c295a5d124cca55f001df697f853e7f8.ctex"
+uid="uid://chsl73nvv42gt"
+path="res://.godot/imported/hurt.webp-aab88dc98bffb6d6f5b7088c9a9c2049.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/attack.png"
-dest_files=["res://.godot/imported/attack.png-c295a5d124cca55f001df697f853e7f8.ctex"]
+source_file="res://assets/characters/knight/anim/hurt.webp"
+dest_files=["res://.godot/imported/hurt.webp-aab88dc98bffb6d6f5b7088c9a9c2049.ctex"]
 
 [params]
 

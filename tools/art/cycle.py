@@ -46,6 +46,8 @@ def main() -> None:
     parser.add_argument("--max-period", type=float, default=2.0, help="seconds")
     parser.add_argument("--settle", type=float, default=0.0, help="once: distance below which the pose counts as settled (0 = auto)")
     parser.add_argument("--window", default="", help="only consider frames between these seconds, e.g. 2.5,6.5")
+    parser.add_argument("--stop-at-peak", action="store_true",
+                        help="once: end at the frame farthest from the start (a pose that is held, e.g. crouch)")
     args = parser.parse_args()
 
     meta_path = pathlib.Path(args.meta)
@@ -77,6 +79,8 @@ def main() -> None:
         onset = next((i for i, d in enumerate(diffs) if d > threshold), 0)
         peak = int(np.argmax(diffs))
         end = next((i for i in range(peak, count) if diffs[i] < threshold), count - 1)
+        if args.stop_at_peak:
+            end = peak
         picked_idx = list(range(max(onset - 1, 0), end + 1))
         info = f"onset {onset}, peak {peak}, end {end}, threshold {threshold:.1f}"
 

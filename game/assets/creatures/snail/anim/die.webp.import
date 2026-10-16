@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dke2r4dsce1uq"
-path="res://.godot/imported/hurt.png-b46ef1adce234270a4b32f4411cc7d49.ctex"
+uid="uid://sdpyfwbtda5x"
+path="res://.godot/imported/die.webp-366a0d9001fe2a7d62d18ee37a9e3361.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/hurt.png"
-dest_files=["res://.godot/imported/hurt.png-b46ef1adce234270a4b32f4411cc7d49.ctex"]
+source_file="res://assets/creatures/snail/anim/die.webp"
+dest_files=["res://.godot/imported/die.webp-366a0d9001fe2a7d62d18ee37a9e3361.ctex"]
 
 [params]
 

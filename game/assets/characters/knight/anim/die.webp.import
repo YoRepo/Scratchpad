@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xrshqmme61u6"
-path="res://.godot/imported/idle.png-2ba2bd320a8d5babad03a4445a87d067.ctex"
+uid="uid://bgficy61ihnxp"
+path="res://.godot/imported/die.webp-54e38171d57ef353e495763ae81d063d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/knight/anim/idle.png"
-dest_files=["res://.godot/imported/idle.png-2ba2bd320a8d5babad03a4445a87d067.ctex"]
+source_file="res://assets/characters/knight/anim/die.webp"
+dest_files=["res://.godot/imported/die.webp-54e38171d57ef353e495763ae81d063d.ctex"]
 
 [params]
 
