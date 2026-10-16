@@ -120,7 +120,8 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
 - The art pipeline lives in `tools/art/` and is documented in `tools/art/CONVENTIONS.md`: `gen.py`
   (Gemini stills, writes `ledger.csv` and enforces per-tag spend caps), `video.py` (clips from one
   base frame: Gemini Omni by default, Veo with `--model veo-...`), `frames.py` + `cycle.py` + `finalize_sheets.py` (green-screen keying, loop cutting,
-  WebP sheets), `stride.py` (moonwalk and stride-speed check for walks), `still_to_sheet.py` (one-frame idles), `cutout.py` / `split.py` (props, icons),
+  WebP sheets), `stride.py` (moonwalk and stride-speed check for walks), `mirror_sheets.py` (for art that
+  came out facing left: sheets must face right), `still_to_sheet.py` (one-frame idles), `cutout.py` / `split.py` (props, icons),
   `to_webp.py` (still art for shipping). Omni bills per token (about $0.10 per second of 720p clip; 360p
   is a third of that) and had no daily cap in use so far. Veo on a Tier 1 project is capped at about 10
   clips per model per day: HTTP 429 RESOURCE_EXHAUSTED means wait for the reset at midnight Pacific.

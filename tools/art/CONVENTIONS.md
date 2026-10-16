@@ -93,6 +93,11 @@ rotated puppet parts (dangling cloth needs real frames). Recipe:
    background stays a flat solid bright green screen the whole time: no ground shadow, no other
    objects, no text, no watermark, no extra characters, no 3D or photorealistic look." followed by
    the action, "in place", and "The last frame returns to the exact starting pose." for loops.
+   The runtime assumes every sheet faces right and mirrors it to face left. The knight's base
+   frame came out facing left and every sheet cut from it had to be mirrored afterwards
+   (`mirror_sheets.py`, which flips each cell and moves the origin); new knight clips start
+   from `game/assets/characters/knight/reference.png`, the mirrored base, so they face right.
+   Look at a sheet's first frame before shipping it: visor and feet point right, shield at the back.
    Neither model takes a negative prompt; fold negatives into the prompt.
 4. `frames.py clip.mp4 frames/ --fps 24 --scale 0.4 --origin 640,660 --name <anim>` keys the
    green and writes 24 fps frames at a fixed 0.4 scale so every clip of a character shares one
@@ -103,10 +108,12 @@ rotated puppet parts (dangling cloth needs real frames). Recipe:
    `cycle.py --mode loop --fps 8 --max-frames 48 --min-period 5 --max-period 6.2`.
    Check every walk with `stride.py anim/walk.json` before shipping it: in a right-facing walk
    animated in place the planted foot must slide left (backward) from frame to frame, and its slide
-   speed should come close to the run speed the sheet is played at (175 world px/s for the knight);
+   speed should come close to the run speed the sheet is played at (150 world px/s for the knight);
    `PlayerVisual` scales playback by actual speed, but a clip whose feet barely move reads as a
-   moonwalk at any rate. Feet sliding right mean the model walked the character backwards: cut
-   the same frames with `cycle.py --reverse`. A tiny stride means a new clip.
+   moonwalk at any rate. Judge the direction only on art that faces right (mirror first if it does
+   not): the knight's "moonwalk" was his sheets facing left, not his feet. Feet that still slide
+   right on right-facing art mean the model walked the character backwards: cut the same frames
+   with `cycle.py --reverse`. A tiny stride means a new clip.
 5. `cycle.py frames/<anim>.json game/assets/characters/<name>/anim --mode loop|once --fps 12`
    picks one period (loop) or the motion segment (once), resamples to 12 fps, and writes
    `<anim>.png` (sheet) + `<anim>.json` (frames, columns, size, fps, loop, origin). Look at
