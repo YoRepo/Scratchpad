@@ -1,0 +1,8 @@
+{
+ "world_height": 62,
+ "source_height": 410,
+ "frame_scale": 0.4,
+ "animations": [
+  "idle"
+ ]
+}
