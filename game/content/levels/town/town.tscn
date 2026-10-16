@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://src/world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://src/world/backdrop.tscn" id="2_backdrop"]
@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://content/mobs/hedgehog.tres" id="18_hedgehog"]
 [ext_resource type="Script" path="res://src/world/music_zone.gd" id="19_music"]
 [ext_resource type="Script" path="res://src/world/ledge_skin.gd" id="20_skin"]
+[ext_resource type="Script" path="res://src/world/water.gd" id="21_water"]
 
 [node name="Town" type="Node2D"]
 script = ExtResource("1_level")
@@ -73,16 +74,34 @@ points = PackedVector2Array(0, 0, 20, 0, 20, 400, 0, 400)
 one_way = false
 fill_color = Color(0.3, 0.3, 0.32, 1)
 
-[node name="Hill" type="StaticBody2D" parent="Footholds"]
+[node name="Bluff" type="StaticBody2D" parent="Footholds"]
 position = Vector2(2600, 330)
 script = ExtResource("4_foothold")
-points = PackedVector2Array(0, 0, 180, -64, 340, -64, 520, 0)
+points = PackedVector2Array(0, 0, 180, -73, 510, -73, 510, 0)
 one_way = false
 
-[node name="HillStrip" type="Node2D" parent="Footholds/Hill"]
+[node name="BluffStrip" type="Node2D" parent="Footholds/Bluff"]
 script = ExtResource("5_strip")
 strip_name = &"ground_outskirts"
 thickness = 70.0
+
+[node name="EastBank" type="StaticBody2D" parent="Footholds"]
+position = Vector2(3215, 330)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, -73, 108, -73, 248, 0, 0, 0)
+one_way = false
+
+[node name="EastBankStrip" type="Node2D" parent="Footholds/EastBank"]
+script = ExtResource("5_strip")
+strip_name = &"ground_outskirts"
+thickness = 70.0
+
+[node name="BridgeDeck" type="StaticBody2D" parent="Footholds"]
+position = Vector2(3068, 257)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 15, -7, 59, -11.5, 93, -16, 127, -11, 167, -7, 176, -0.5, 188, 1, 188, 13, 0, 13)
+fill_color = Color(0, 0, 0, 0)
+top_color = Color(0, 0, 0, 0)
 
 [node name="LedgeChurch" type="StaticBody2D" parent="Footholds"]
 position = Vector2(180, 200)
@@ -227,12 +246,12 @@ script = ExtResource("6_prop")
 prop_name = &"bush"
 
 [node name="Willow" type="Sprite2D" parent="Props"]
-position = Vector2(3250, 330)
+position = Vector2(3300, 257)
 script = ExtResource("6_prop")
 prop_name = &"tree_willow"
 
 [node name="Bush2" type="Sprite2D" parent="Props"]
-position = Vector2(2800, 266)
+position = Vector2(2800, 257)
 script = ExtResource("6_prop")
 prop_name = &"bush"
 
@@ -256,6 +275,14 @@ prop_name = &"fence"
 position = Vector2(4300, 330)
 script = ExtResource("6_prop")
 prop_name = &"tree_oak"
+
+[node name="Water" type="Node2D" parent="."]
+
+[node name="Ford" type="Node2D" parent="Water"]
+position = Vector2(3110, 330)
+z_index = 1
+script = ExtResource("21_water")
+size = Vector2(105, 16)
 
 [node name="NPCs" type="Node2D" parent="."]
 
@@ -301,7 +328,7 @@ position = Vector2(2480, 330)
 config = ExtResource("16_snail")
 
 [node name="Snail3" parent="Mobs" instance=ExtResource("9_mob")]
-position = Vector2(3320, 330)
+position = Vector2(3500, 330)
 config = ExtResource("16_snail")
 
 [node name="Hare1" parent="Mobs" instance=ExtResource("9_mob")]
@@ -309,7 +336,7 @@ position = Vector2(2250, 240)
 config = ExtResource("17_hare")
 
 [node name="Hare2" parent="Mobs" instance=ExtResource("9_mob")]
-position = Vector2(3020, 330)
+position = Vector2(3000, 257)
 config = ExtResource("17_hare")
 
 [node name="Hare3" parent="Mobs" instance=ExtResource("9_mob")]
@@ -317,7 +344,7 @@ position = Vector2(3960, 330)
 config = ExtResource("17_hare")
 
 [node name="Hedgehog1" parent="Mobs" instance=ExtResource("9_mob")]
-position = Vector2(2860, 266)
+position = Vector2(2860, 257)
 config = ExtResource("18_hedgehog")
 
 [node name="Hedgehog2" parent="Mobs" instance=ExtResource("9_mob")]

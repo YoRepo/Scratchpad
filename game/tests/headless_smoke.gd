@@ -188,6 +188,39 @@ func _run() -> void:
 	_check("knight stands in the town square", player.is_on_floor() and _state(player) == &"Idle",
 		_state(player))
 
+	# The ford: the bridge deck carries the knight over the stream, Down+Jump drops him
+	# into it, and a jump from the stream bed reaches the bank again. Creatures stand down.
+	for mob in get_tree().get_nodes_in_group(Mob.GROUP):
+		(mob as Mob).set_hostile(false)
+	player.global_position = Vector2(2900, 257)
+	await _frames(5)
+	Input.action_press(InputActions.MOVE_RIGHT)
+	for i in 200:
+		if player.global_position.x >= 3150.0:
+			break
+		await get_tree().physics_frame
+	Input.action_release(InputActions.MOVE_RIGHT)
+	await _frames(5)
+	_check("bridge deck carries the knight over the ford",
+		player.is_on_floor() and player.global_position.y < 250.0
+		and absf(player.global_position.x - 3160.0) < 40.0, _where(player))
+	Input.action_press(InputActions.MOVE_DOWN)
+	await _frames(3)
+	await _press(InputActions.JUMP)
+	Input.action_release(InputActions.MOVE_DOWN)
+	await _frames(60)
+	_check("down+jump drops off the deck into the stream",
+		player.is_on_floor() and absf(player.global_position.y - 330.0) < 2.0, _where(player))
+	Input.action_press(InputActions.MOVE_RIGHT)
+	await _frames(20)
+	await _press(InputActions.JUMP)
+	await _frames(60)
+	Input.action_release(InputActions.MOVE_RIGHT)
+	await _frames(5)
+	_check("a jump from the stream bed reaches the east bank",
+		player.is_on_floor() and player.global_position.y < 300.0
+		and player.global_position.x > 3215.0, _where(player))
+
 	var verdict := "ALL CHECKS PASSED" if _failures == 0 else "%d CHECK(S) FAILED" % _failures
 	print("[headless] %s" % verdict)
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -209,6 +242,11 @@ func _frames(count: int) -> void:
 
 func _state(player: Player) -> StringName:
 	return player.state_machine.state_name()
+
+
+func _where(player: Player) -> String:
+	var at := player.global_position
+	return "x=%.0f y=%.0f state=%s" % [at.x, at.y, _state(player)]
 
 
 func _check(name: String, ok: bool, detail: String = "") -> void:

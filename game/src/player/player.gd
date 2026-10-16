@@ -124,8 +124,8 @@ func set_platform_collision(enabled: bool) -> void:
 
 
 func set_crouching(crouching: bool) -> void:
-	stand_shape.disabled = crouching
-	crouch_shape.disabled = not crouching
+	stand_shape.set_deferred("disabled", crouching)
+	crouch_shape.set_deferred("disabled", not crouching)
 
 
 func can_stand() -> bool:

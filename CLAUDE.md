@@ -46,12 +46,12 @@ touch controls must keep working. Sessions do not share memory: read this file f
 | `game/src/items/*` | `ItemData` + `ItemCatalog` (autoload), `Inventory` (autoload), `DropTable`, `Pickup`, `DropSpawner`. |
 | `game/src/mobs/*` | `MobConfig` (resource), `Mob` body, creature states (idle, wander, chase, attack, hurt, dead), `FloatingHealthBar` (pops up over a hurt creature, MapleStory style). |
 | `game/src/quests/*` | `QuestData` (resource) and `QuestLog` (autoload); NPCs ask it which conversation stage to run. |
-| `game/src/world/prop.gd`, `parallax_backdrop.gd`, `ground_strip.gd`, `ledge_skin.gd` | Painted scenery: props from `assets/props/props.json`; parallax layers (mirrored pairs, so they tile without seams) and ground strips from `assets/backdrops`. `GroundStrip` and `LedgeSkin` are children of a `Foothold`: the strip follows the foothold's walking surface (slopes included), the skin tiles a platform prop along a ledge; both call `set_painted` so the placeholder fill stops drawing. |
+| `game/src/world/prop.gd`, `parallax_backdrop.gd`, `ground_strip.gd`, `ledge_skin.gd` | Painted scenery: props from `assets/props/props.json`; parallax layers (mirrored pairs, so they tile without seams) and ground strips from `assets/backdrops`. `GroundStrip` and `LedgeSkin` are children of a `Foothold`: the strip follows the foothold's walking surface (slopes included), the skin tiles a platform prop along a ledge; both call `set_painted` so the placeholder fill stops drawing. `water.gd` paints a rippling translucent band (z_index 1, so it draws over whoever wades). |
 | `game/src/core/texture_files.gd` | `TextureFiles.load_texture(path)`: the one place that resolves still art, preferring `.webp` over `.png`. |
 | `game/content/items`, `mobs`, `quests`, `dialogue` | Data: every item, creature kind, quest and conversation. |
 | `game/assets/characters|creatures|npcs/<name>/` | Animation sheets + `character.json` produced by the art pipeline (`tools/art/CONVENTIONS.md`). |
 | `game/src/ui/hud.gd`, `dialogue_box.gd`, `touch_controls.gd` | HUD, dialogue UI, touch controls: a floating joystick (left 45% of the screen) plus JUMP/ATK/INTERACT thumb buttons, built in code; painted art is picked up from `assets/ui/*.webp` when present (`hud.gd` nine-slices the frames, `_small` variants are pre-scaled for the HUD). |
-| `game/content/levels/<name>/<name>.tscn` | Maps: `town` (the game) and `meadow` (the test level the browser tour uses via `?level=meadow`). |
+| `game/content/levels/<name>/<name>.tscn` | Maps: `town` (the game) and `meadow` (the test level the browser tour uses via `?level=meadow`). On web `?spawn=<marker>` starts at that spawn marker. |
 | `game/tests/headless_smoke.tscn` | In-engine integration test. `tools/web_smoke_test.js` is the browser test. |
 
 ## Engine rules the game depends on

@@ -20,7 +20,7 @@ func _ready() -> void:
 	GameEvents.player_died.connect(_on_player_died)
 	_hud.setup(_player)
 	_camera.follow(_player)
-	change_level(_requested_level(), first_spawn)
+	change_level(_requested_level(), _requested_spawn())
 	DebugBridge.register(&"game", debug_state)
 	var version: String = ProjectSettings.get_setting("application/config/version", "dev")
 	print("[boot] Scratchpad Side-Scroller v", version)
@@ -50,14 +50,28 @@ func debug_state() -> Dictionary:
 ## On web, "?level=<name>" in the page URL picks content/levels/<name>/<name>.tscn
 ## (the browser test tours the meadow while players get the town).
 func _requested_level() -> String:
-	if not OS.has_feature("web"):
-		return first_level
-	var search = JavaScriptBridge.eval("new URLSearchParams(location.search).get('level') || ''", true)
-	var name := String(search) if search != null else ""
-	if name.is_empty() or not name.is_valid_identifier():
+	var name := _url_param("level")
+	if name.is_empty():
 		return first_level
 	var path := "res://content/levels/%s/%s.tscn" % [name, name]
 	return path if ResourceLoader.exists(path) else first_level
+
+
+## On web, "?spawn=<marker>" starts the knight at that spawn marker of the level
+## (tests use it to reach a far corner without the walk).
+func _requested_spawn() -> StringName:
+	var name := _url_param("spawn")
+	return StringName(name) if not name.is_empty() else first_spawn
+
+
+## A page URL query parameter on web, restricted to identifier-like values; "" elsewhere.
+func _url_param(key: String) -> String:
+	if not OS.has_feature("web"):
+		return ""
+	var script := "new URLSearchParams(location.search).get('%s') || ''" % key
+	var value = JavaScriptBridge.eval(script, true)
+	var text := String(value) if value != null else ""
+	return text if text.is_valid_identifier() else ""
 
 
 func _on_player_died() -> void:
