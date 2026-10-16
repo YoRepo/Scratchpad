@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dahyxml7njvfn"
-path="res://.godot/imported/idle.png-ee52336ea489f712ec6bf1d30ff64650.ctex"
+uid="uid://blw30o6t7ke88"
+path="res://.godot/imported/move.webp-48ae4b4491081a2619f6ed498faad1e9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/creatures/hedgehog/anim/idle.png"
-dest_files=["res://.godot/imported/idle.png-ee52336ea489f712ec6bf1d30ff64650.ctex"]
+source_file="res://assets/creatures/hedgehog/anim/move.webp"
+dest_files=["res://.godot/imported/move.webp-48ae4b4491081a2619f6ed498faad1e9.ctex"]
 
 [params]
 

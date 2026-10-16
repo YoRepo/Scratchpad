@@ -1,0 +1,18 @@
+{
+ "name": "idle",
+ "frames": 1,
+ "columns": 1,
+ "width": 91,
+ "height": 225,
+ "fps": 12.0,
+ "loop": true,
+ "origin": [
+  45.64,
+  225.8
+ ],
+ "factor": 0.40036,
+ "source_frames": [
+  0
+ ],
+ "still": true
+}

@@ -8,9 +8,13 @@ signal finished(animation: StringName)
 
 var available := false
 
+const BREATH_AMOUNT := 0.012
+const BREATH_SPEED := 2.4
+
 var _sprite: AnimatedSprite2D
 var _set: SpriteSheetLoader.CharacterSet
 var _current: StringName = &""
+var _breath_phase := 0.0
 
 
 ## Loads the folder's sheets; returns false (and stays empty) if there are none.
@@ -26,6 +30,17 @@ func setup(folder: String) -> bool:
 	_sprite.animation_finished.connect(func() -> void: finished.emit(_current))
 	add_child(_sprite)
 	return true
+
+
+func _process(delta: float) -> void:
+	if not available or _current == &"":
+		return
+	if _set.frames.get_frame_count(_current) > 1:
+		return
+	# A still standing in for a clip: breathe a little so the figure is not frozen.
+	_breath_phase += delta * BREATH_SPEED
+	var stretch := 1.0 + sin(_breath_phase) * BREATH_AMOUNT
+	_sprite.scale = Vector2(_set.scale * (2.0 - stretch), _set.scale * stretch)
 
 
 func has(animation: StringName) -> bool:
