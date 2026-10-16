@@ -59,7 +59,10 @@ func _exit_tree() -> void:
 func _physics_process(delta: float) -> void:
 	intent = input.read()
 	state_machine.physics_update(delta)
-	_airborne_time = 0.0 if is_on_floor() else _airborne_time + delta
+	var grounded := is_on_floor()
+	if grounded and _airborne_time > 0.15:
+		GameEvents.player_landed.emit()
+	_airborne_time = 0.0 if grounded else _airborne_time + delta
 	if _invulnerable_left > 0.0:
 		_invulnerable_left = maxf(_invulnerable_left - delta, 0.0)
 		visual.set_blink(_invulnerable_left > 0.0)
@@ -89,6 +92,7 @@ func apply_air_control(axis: float) -> void:
 func start_jump() -> void:
 	velocity.y = config.jump_velocity
 	jumps += 1
+	GameEvents.player_jumped.emit()
 
 
 ## True for a short while after walking off a ledge, so a late jump still works.
@@ -101,6 +105,7 @@ func jump_off_climbable(axis: float) -> void:
 	velocity.y = config.climb_jump_velocity
 	face_toward(axis)
 	jumps += 1
+	GameEvents.player_jumped.emit()
 
 
 ## Drops through the one-way foothold underfoot. Returns false on solid ground.
@@ -160,6 +165,7 @@ func take_hit(info: HitInfo) -> void:
 	if away == 0.0:
 		away = -facing
 	velocity = Vector2(away * info.knockback, -160.0)
+	GameEvents.player_hurt.emit()
 	if health.hp > 0:
 		state_machine.change(PlayerState.HURT)
 

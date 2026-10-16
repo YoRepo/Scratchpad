@@ -100,7 +100,7 @@ func face(direction: float) -> void:
 	if direction == 0.0:
 		return
 	facing = 1 if direction > 0.0 else -1
-	visual.scale.x = -facing if config.animation_folder != "" else facing
+	visual.scale.x = facing
 	contact.set_facing(facing)
 
 
@@ -142,6 +142,7 @@ func _on_hit(info: HitInfo) -> void:
 	var away := signf(global_position.x - info.source_position.x)
 	velocity.x = away * info.knockback
 	velocity.y = -80.0
+	GameEvents.mob_hurt.emit(self)
 	if health.hp > 0:
 		state_machine.change(MobState.HURT)
 

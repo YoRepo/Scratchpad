@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://src/world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://src/world/backdrop.tscn" id="2_backdrop"]
@@ -18,12 +18,14 @@
 [ext_resource type="Resource" path="res://content/mobs/snail.tres" id="16_snail"]
 [ext_resource type="Resource" path="res://content/mobs/hare.tres" id="17_hare"]
 [ext_resource type="Resource" path="res://content/mobs/hedgehog.tres" id="18_hedgehog"]
+[ext_resource type="Script" path="res://src/world/music_zone.gd" id="19_music"]
 
 [node name="Town" type="Node2D"]
 script = ExtResource("1_level")
 display_name = "Saint Ysolde's Ford"
 bounds = Rect2(0, 0, 4400, 360)
 respawn_spawn = &"start"
+music = &"town_theme"
 
 [node name="Backdrop" parent="." instance=ExtResource("2_backdrop")]
 top_color = Color(0.56, 0.68, 0.82, 1)
@@ -296,6 +298,20 @@ config = ExtResource("18_hedgehog")
 [node name="Hedgehog3" parent="Mobs" instance=ExtResource("9_mob")]
 position = Vector2(4220, 330)
 config = ExtResource("18_hedgehog")
+
+[node name="Music" type="Node2D" parent="."]
+
+[node name="TownZone" type="Area2D" parent="Music"]
+position = Vector2(950, 180)
+script = ExtResource("19_music")
+track = &"town_theme"
+size = Vector2(1900, 360)
+
+[node name="OutskirtsZone" type="Area2D" parent="Music"]
+position = Vector2(3150, 180)
+script = ExtResource("19_music")
+track = &"outskirts_theme"
+size = Vector2(2500, 360)
 
 [node name="Spawns" type="Node2D" parent="."]
 

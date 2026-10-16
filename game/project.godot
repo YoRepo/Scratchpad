@@ -26,6 +26,7 @@ DialogueRunner="*res://src/dialogue/dialogue_runner.gd"
 ItemCatalog="*res://src/items/item_catalog.gd"
 Inventory="*res://src/items/inventory.gd"
 QuestLog="*res://src/quests/quest_log.gd"
+GameAudio="*res://src/core/game_audio.gd"
 
 [editor]
 

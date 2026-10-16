@@ -12,6 +12,7 @@ func enter(_from: StringName) -> void:
 	if _grounded:
 		player.velocity.x = 0.0
 	player.attacks += 1
+	GameEvents.player_attacked.emit()
 	player.visual.set_pose(PlayerVisual.Pose.ATTACK)
 	player.hitbox.begin_swing(player.config.attack_damage)
 

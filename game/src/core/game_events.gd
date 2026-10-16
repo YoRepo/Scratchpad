@@ -12,3 +12,9 @@ signal player_health_changed(current: int, maximum: int)
 signal player_died
 signal player_respawned
 signal mob_killed(mob: Mob)
+signal player_jumped
+signal player_landed
+signal player_attacked
+signal player_hurt
+signal mob_hurt(mob: Mob)
+signal music_requested(track: StringName)

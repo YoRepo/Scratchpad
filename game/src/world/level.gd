@@ -8,6 +8,8 @@ extends Node2D
 @export var bounds := Rect2(0, 0, 640, 360)
 ## Spawn the knight wakes up at after being knocked out.
 @export var respawn_spawn: StringName = &"start"
+## Music track (assets/audio/music/<name>.ogg) that starts with the level.
+@export var music: StringName = &""
 
 
 func spawn_position(spawn_name: StringName) -> Vector2:
