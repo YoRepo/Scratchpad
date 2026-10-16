@@ -1,0 +1,20 @@
+{
+ "name": "attack",
+ "frames": 4,
+ "columns": 4,
+ "width": 119,
+ "height": 105,
+ "fps": 24.0,
+ "loop": true,
+ "origin": [
+  59.31,
+  101.79
+ ],
+ "factor": 0.40076,
+ "source_frames": [
+  0,
+  1,
+  2,
+  2
+ ]
+}

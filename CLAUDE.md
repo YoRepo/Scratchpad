@@ -60,7 +60,7 @@ touch controls must keep working. Sessions do not share memory: read this file f
 - Textures import as lossy WebP (`[importer_defaults]` in `project.godot`: `compress/mode=1`, quality
   0.85; every `.import` sidecar under `assets/` says the same). Lossless import re-encodes each image as
   PNG inside the pck and made the download 21 MB instead of 5 MB. `*reference.png` (the base frames
-  the Veo clips were made from) stays in git but is excluded from the export in `export_presets.cfg`.
+  the animation clips were made from) stays in git but is excluded from the export in `export_presets.cfg`.
 - `editor/export/convert_text_resources_to_binary=false` stays off: the export-time conversion
   dropped `PackedStringArray` exports from script resources (seen in 4.7.2 with dialogue `.tres`).
 - Renderer `gl_compatibility`; base viewport 640x360; stretch `canvas_items` + `expand`; nearest filtering.
@@ -112,13 +112,16 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
 - `GEMINI_API_KEY` is set in the environment for image generation (concept art, backdrops, portraits,
   icons). Send it in the `x-goog-api-key` header. Never commit or print it: the repo is public.
   Image models available as of October 2026: `gemini-3-pro-image`, `gemini-3.1-flash-image`,
-  `gemini-3.1-flash-lite-image`, `gemini-2.5-flash-image`; video: `veo-3.1-*`. Confirm cost with the
+  `gemini-3.1-flash-lite-image`, `gemini-2.5-flash-image`; video: `gemini-omni-1.1-flash` (Interactions
+  API, the default), `veo-3.1-*` (predictLongRunning, fallback). Confirm cost with the
   owner before bulk generation; keep generated sources out of git unless they are final assets.
 - The art pipeline lives in `tools/art/` and is documented in `tools/art/CONVENTIONS.md`: `gen.py`
-  (Gemini stills, writes `ledger.csv` and enforces per-tag spend caps), `video.py` (Veo clips from one
-  base frame), `frames.py` + `cycle.py` + `finalize_sheets.py` (green-screen keying, loop cutting,
+  (Gemini stills, writes `ledger.csv` and enforces per-tag spend caps), `video.py` (clips from one
+  base frame: Gemini Omni by default, Veo with `--model veo-...`), `frames.py` + `cycle.py` + `finalize_sheets.py` (green-screen keying, loop cutting,
   WebP sheets), `still_to_sheet.py` (one-frame idles), `cutout.py` / `split.py` (props, icons),
-  `to_webp.py` (still art for shipping). Veo has a small daily quota: HTTP 429 means wait for the reset.
+  `to_webp.py` (still art for shipping). Omni bills per token (about $0.10 per second of 720p clip; 360p
+  is a third of that) and had no daily cap in use so far. Veo on a Tier 1 project is capped at about 10
+  clips per model per day: HTTP 429 RESOURCE_EXHAUSTED means wait for the reset at midnight Pacific.
 - Music and sound effects are synthesised by `tools/audio/synth.py` (numpy, no samples) into
   `assets/audio`; `SoundBank` plays them, `GameAudio` maps game events to cues.
 
@@ -128,6 +131,6 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
   one-way footholds, ladders and ropes, crouch, slopes, a short sword swing (10 damage).
 - Setting: medieval; a knight; marginalia creatures (first one: a giant snail training dummy).
 - Maps: `meadow` (test level with every feature) and `cloister` (tiny second map) linked by portals.
-- Art: smooth oil-painted Romanesque marginalia; characters are Veo clips from one base frame (see tools/art/CONVENTIONS.md).
+- Art: smooth oil-painted Romanesque marginalia; characters are video clips (Gemini Omni, earlier Veo) from one base frame (see tools/art/CONVENTIONS.md).
 - Done: the knight's painted animations, creatures with contact damage and loot, inventory, the Torn Psalter quest, the town map with painted backdrops, props, ground, ledges, ladders, parchment UI and item icons, synthesised music and SFX.
 - Not started: skills, shops, save games, more maps. Discuss each with the owner before building.

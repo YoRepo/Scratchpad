@@ -23,6 +23,13 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from cutout import despill, key_alpha  # noqa: E402
 
 
+def green_dominant(rgb: np.ndarray) -> np.ndarray:
+    """Pixels whose green clearly leads red and blue: the screen seen through a painted shadow."""
+    channels = rgb.astype(np.int32)
+    other = np.maximum(channels[:, :, 0], channels[:, :, 2])
+    return (channels[:, :, 1] > other * 1.25 + 8) & (channels[:, :, 1] > 40)
+
+
 def remove_specks(alpha: np.ndarray, min_blob: int) -> np.ndarray:
     """Clear small isolated blobs (key noise) so they cannot inflate the bounding box."""
     from scipy import ndimage
@@ -49,6 +56,8 @@ def main() -> None:
     parser.add_argument("--crop", default="", help="fixed source crop x0,y0,x1,y1 (default: tight box over all frames)")
     parser.add_argument("--origin", default="640,660", help="source x,y of the character origin: horizontal centre, ground line")
     parser.add_argument("--min-blob", type=int, default=400, help="drop keyed blobs smaller than this many pixels")
+    parser.add_argument("--key-shadow", action="store_true",
+                        help="also key darker green-dominant pixels (painted ground shadows); not for green costumes")
     parser.add_argument("--name", default="anim")
     args = parser.parse_args()
 
@@ -67,6 +76,8 @@ def main() -> None:
         for path in raw:
             pixels = np.array(Image.open(path).convert("RGBA"))
             pixels[:, :, 3] = key_alpha(pixels[:, :, :3], (0, 255, 0), args.tolerance)
+            if args.key_shadow:
+                pixels[:, :, 3] = np.where(green_dominant(pixels[:, :, :3]), 0, pixels[:, :, 3])
             pixels = despill(pixels, (0, 255, 0))
             pixels[:, :, 3] = remove_specks(pixels[:, :, 3], args.min_blob)
             keyed.append(pixels)

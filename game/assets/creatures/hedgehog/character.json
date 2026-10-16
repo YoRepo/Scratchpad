@@ -4,6 +4,8 @@
  "frame_scale": 0.4,
  "animations": [
   "idle",
-  "move"
+  "move",
+  "attack",
+  "die"
  ]
 }

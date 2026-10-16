@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
-"""Generate a short video clip with Veo through the Gemini API and record its cost.
+"""Generate a short video clip through the Gemini API and record its cost.
 
     python3 tools/art/video.py --prompt "..." --first base.png --out clip.mp4 [--last base.png]
-                               [--model veo-3.1-lite-generate-preview] [--seconds 8] [--aspect 16:9]
+                               [--model gemini-omni-1.1-flash] [--seconds 8] [--aspect 16:9]
                                [--resolution 720p] [--negative "..."] [--tag hero --tag-cap 8]
 
+Two backends behind one interface:
+- Gemini Omni (model names starting with "gemini-omni"): the Interactions API, synchronous,
+  3 to 10 s, 360p/720p/1080p/4k; the first and last frames are declared in the prompt as
+  "[# Sources <FIRST_FRAME>@Image1 <LAST_FRAME>@Image2]". Cost comes from the usage tokens.
+- Veo (model names starting with "veo"): predictLongRunning, 4/6/8 s, polled; cost per second.
+
 The first frame image fixes the framing; a last frame makes the clip return to it (loops).
-Cost is estimated per second of output and appended to tools/art/ledger.csv.
+Every clip is appended to tools/art/ledger.csv.
 """
 import argparse
 import base64
@@ -29,6 +35,10 @@ RATES = {
     "veo-3.1-fast-generate-preview": (0.10, 0.12),
     "veo-3.1-generate-preview": (0.40, 0.40),
 }
+# Gemini Omni bills by token: USD per million for video output, text/thought output, input.
+OMNI_VIDEO_PER_M = 17.50
+OMNI_TEXT_PER_M = 9.00
+OMNI_INPUT_PER_M = 1.50
 
 
 def image_part(path: str) -> dict:
@@ -58,6 +68,50 @@ def request_json(url: str, key: str, body: dict | None = None) -> dict:
     sys.exit("gave up after retries")
 
 
+def omni_generate(args: argparse.Namespace, key: str, out: pathlib.Path) -> float:
+    """Run one Gemini Omni interaction, write the mp4, return the estimated cost in USD."""
+    sources = "<FIRST_FRAME>@Image1"
+    items = [{"type": "image", "data": image_part(args.first)["bytesBase64Encoded"],
+              "mime_type": image_part(args.first)["mimeType"]}]
+    if args.last:
+        same = pathlib.Path(args.last).resolve() == pathlib.Path(args.first).resolve()
+        if not same:
+            items.append({"type": "image", "data": image_part(args.last)["bytesBase64Encoded"],
+                          "mime_type": image_part(args.last)["mimeType"]})
+        sources += " <LAST_FRAME>@Image1" if same else " <LAST_FRAME>@Image2"
+    prompt = f"[# Sources {sources}]\n{args.prompt}"
+    if args.negative:
+        prompt += f"\nAvoid: {args.negative}"
+    body = {
+        "model": args.model,
+        "input": [{"type": "text", "text": prompt}] + items,
+        "response_format": {"type": "video", "aspect_ratio": args.aspect,
+                            "resolution": args.resolution, "duration": f"{args.seconds}s"},
+    }
+    result = request_json(f"{API}/interactions", key, body)
+    if result.get("status") != "completed":
+        sys.exit(f"interaction not completed: {json.dumps(result)[:600]}")
+    videos = [content for step in result.get("steps", []) if step.get("type") == "model_output"
+              for content in step.get("content", []) if content.get("type") == "video"]
+    if not videos:
+        sys.exit(f"no video in interaction: {json.dumps(result)[:600]}")
+    video = videos[0]
+    if "data" in video:
+        out.write_bytes(base64.b64decode(video["data"]))
+    elif "uri" in video:
+        download(video["uri"], key, out)
+    else:
+        sys.exit(f"unknown video payload: {json.dumps(video)[:300]}")
+    usage = result.get("usage", {})
+    video_tokens = sum(entry.get("tokens", 0) for entry in usage.get("output_tokens_by_modality", [])
+                       if entry.get("modality") == "video")
+    other_output = usage.get("total_output_tokens", 0) - video_tokens
+    cost = (video_tokens * OMNI_VIDEO_PER_M + other_output * OMNI_TEXT_PER_M
+            + usage.get("total_input_tokens", 0) * OMNI_INPUT_PER_M) / 1e6
+    print(f"omni interaction {result.get('id', '?')}: {video_tokens} video tokens", file=sys.stderr)
+    return cost
+
+
 def download(uri: str, key: str, out: pathlib.Path) -> None:
     request = urllib.request.Request(uri, headers={"x-goog-api-key": key})
     with urllib.request.urlopen(request, timeout=600) as response:
@@ -70,10 +124,10 @@ def main() -> None:
     parser.add_argument("--first", required=True, help="first frame image (sets the framing)")
     parser.add_argument("--last", default="", help="optional last frame image")
     parser.add_argument("--out", required=True)
-    parser.add_argument("--model", default="veo-3.1-lite-generate-preview")
-    parser.add_argument("--seconds", type=int, default=8, choices=[4, 6, 8])
+    parser.add_argument("--model", default="gemini-omni-1.1-flash")
+    parser.add_argument("--seconds", type=int, default=8, choices=range(3, 11))
     parser.add_argument("--aspect", default="16:9", choices=["16:9", "9:16"])
-    parser.add_argument("--resolution", default="720p", choices=["720p", "1080p"])
+    parser.add_argument("--resolution", default="720p", choices=["360p", "720p", "1080p", "4k"])
     parser.add_argument("--negative", default="")
     parser.add_argument("--cap-usd", type=float, default=22.0)
     parser.add_argument("--tag", default="video")
@@ -88,6 +142,22 @@ def main() -> None:
         sys.exit(f"budget cap reached: ${spent:.2f} >= ${args.cap_usd:.2f}")
     if args.tag and args.tag_cap > 0 and ledger_total(args.tag) >= args.tag_cap:
         sys.exit(f"budget cap for tag '{args.tag}' reached (${ledger_total(args.tag):.2f})")
+
+    out = pathlib.Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    if args.model.startswith("gemini-omni"):
+        est_usd = omni_generate(args, key, out)
+        append_ledger({
+            "time": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+            "tag": args.tag, "model": args.model, "size": args.resolution, "aspect": args.aspect,
+            "prompt_tokens": 0, "output_tokens": args.seconds, "est_usd": f"{est_usd:.4f}",
+            "out": args.out, "prompt": args.prompt[:160].replace("\n", " "),
+        })
+        print(f"wrote {out} ({out.stat().st_size // 1024} KB) est ${est_usd:.2f}, "
+              f"ledger total ${spent + est_usd:.2f}")
+        return
+    if args.seconds not in (4, 6, 8) or args.resolution not in ("720p", "1080p"):
+        sys.exit("Veo takes --seconds 4|6|8 and --resolution 720p|1080p")
 
     instance = {"prompt": args.prompt, "image": image_part(args.first)}
     if args.last:
@@ -117,8 +187,6 @@ def main() -> None:
     if not samples:
         sys.exit(f"no video in response: {json.dumps(response)[:600]}")
     video = samples[0].get("video", samples[0])
-    out = pathlib.Path(args.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
     if "uri" in video:
         download(video["uri"], key, out)
     elif "bytesBase64Encoded" in video:
