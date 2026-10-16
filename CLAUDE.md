@@ -75,7 +75,9 @@ touch controls must keep working. Sessions do not share memory: read this file f
   interactions, interaction_result, dialogue_active, dialogue_index, dialogue_total, dialogue_last_start`.
   Extend; do not remove or rename.
 - Commit generated sidecars (`*.import`, `*.gd.uid`). Never commit `game/.godot/`, `build/`, `tools/node_modules/`.
-- The workflow stamps `config/version` with the commit hash; the HUD shows it.
+- The workflow stamps `config/version` with the commit hash; the HUD shows it. It also runs
+  `tools/bust_cache.sh`, which makes the page fetch `index.js`, the pck and the wasm as `*?v=<commit>`:
+  without that, GitHub Pages and phone browsers keep serving the previous build for a while.
 
 ## Working in a cloud session
 
@@ -118,7 +120,7 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
 - The art pipeline lives in `tools/art/` and is documented in `tools/art/CONVENTIONS.md`: `gen.py`
   (Gemini stills, writes `ledger.csv` and enforces per-tag spend caps), `video.py` (clips from one
   base frame: Gemini Omni by default, Veo with `--model veo-...`), `frames.py` + `cycle.py` + `finalize_sheets.py` (green-screen keying, loop cutting,
-  WebP sheets), `still_to_sheet.py` (one-frame idles), `cutout.py` / `split.py` (props, icons),
+  WebP sheets), `stride.py` (moonwalk and stride-speed check for walks), `still_to_sheet.py` (one-frame idles), `cutout.py` / `split.py` (props, icons),
   `to_webp.py` (still art for shipping). Omni bills per token (about $0.10 per second of 720p clip; 360p
   is a third of that) and had no daily cap in use so far. Veo on a Tier 1 project is capped at about 10
   clips per model per day: HTTP 429 RESOURCE_EXHAUSTED means wait for the reset at midnight Pacific.

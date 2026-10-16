@@ -101,9 +101,12 @@ rotated puppet parts (dangling cloth needs real frames). Recipe:
    `--crop x0,y0,x1,y1` to cut off impact effects, `--min-blob` to drop flying specks.
    Idle loops made with first = last frame loop over the whole clip: cut them with
    `cycle.py --mode loop --fps 8 --max-frames 48 --min-period 5 --max-period 6.2`.
-   Check every walk for a moonwalk before shipping it: in a right-facing walk animated in place the
-   planted foot must slide left (backward) from frame to frame. If it slides right, the model walked
-   the character backwards; cut the same frames with `cycle.py --reverse`.
+   Check every walk with `stride.py anim/walk.json` before shipping it: in a right-facing walk
+   animated in place the planted foot must slide left (backward) from frame to frame, and its slide
+   speed should come close to the run speed the sheet is played at (175 world px/s for the knight);
+   `PlayerVisual` scales playback by actual speed, but a clip whose feet barely move reads as a
+   moonwalk at any rate. Feet sliding right mean the model walked the character backwards: cut
+   the same frames with `cycle.py --reverse`. A tiny stride means a new clip.
 5. `cycle.py frames/<anim>.json game/assets/characters/<name>/anim --mode loop|once --fps 12`
    picks one period (loop) or the motion segment (once), resamples to 12 fps, and writes
    `<anim>.png` (sheet) + `<anim>.json` (frames, columns, size, fps, loop, origin). Look at

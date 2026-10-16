@@ -15,6 +15,7 @@ func physics_update(delta: float) -> StringName:
 	player.apply_gravity(delta)
 	player.apply_run(player.intent.move_x)
 	player.move_and_slide()
+	player.visual.set_move_rate(absf(player.velocity.x) / player.config.run_speed)
 	_step_clock -= delta
 	if _step_clock <= 0.0 and player.is_on_floor():
 		_step_clock = STEP_INTERVAL

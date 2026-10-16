@@ -44,6 +44,15 @@ func set_pose(pose: Pose) -> void:
 		animation = &"idle"
 	_character.play(animation, pose == Pose.ATTACK or pose == Pose.HURT or pose == Pose.JUMP)
 	_character.set_paused(pose == Pose.CLIMB_PAUSED)
+	if pose != Pose.RUN:
+		_character.set_speed_scale(1.0)
+
+
+## While running, the walk cycle plays at the pace the feet would need for this speed:
+## rate 1.0 is the sheet's own fps, which matches the full run speed.
+func set_move_rate(rate: float) -> void:
+	if _pose == Pose.RUN:
+		_character.set_speed_scale(clampf(rate, 0.35, 1.5))
 
 
 func set_hurt_tint(active: bool) -> void:

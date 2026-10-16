@@ -70,6 +70,11 @@ jobs:
           ./godot --headless --path game --export-release "Web" "$GITHUB_WORKSPACE/build/web/index.html"
           ls -la build/web
 
+      # GitHub Pages caches index.pck and friends for ten minutes and phones hold on to them
+      # longer, so every file the engine fetches carries this commit as a query string.
+      - name: Bust browser caches with the commit hash
+        run: tools/bust_cache.sh build/web/index.html "${GITHUB_SHA::7}"
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:

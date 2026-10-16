@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_config")
-run_speed = 175.0
+run_speed = 150.0
 jump_velocity = -470.0
 climb_speed = 130.0
 climb_jump_velocity = -330.0

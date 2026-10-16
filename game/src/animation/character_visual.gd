@@ -75,6 +75,12 @@ func set_facing(direction: int) -> void:
 	scale.x = direction
 
 
+## Playback rate multiplier (1.0 = the sheet's own fps); owners match it to movement speed.
+func set_speed_scale(rate: float) -> void:
+	if available:
+		_sprite.speed_scale = rate
+
+
 func set_tint(color: Color) -> void:
 	if available:
 		_sprite.modulate = color
