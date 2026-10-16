@@ -7,8 +7,19 @@ extends Camera2D
 var _target: Node2D
 
 
+func _ready() -> void:
+	DebugBridge.register(&"camera", debug_state)
+
+
 func follow(target: Node2D) -> void:
 	_target = target
+
+
+## Where the camera actually looks (after smoothing and limits), for browser tests
+## that need to find the knight on screen.
+func debug_state() -> Dictionary:
+	var centre := get_screen_center_position()
+	return {"camera_x": snappedf(centre.x, 0.1), "camera_y": snappedf(centre.y, 0.1)}
 
 
 func set_bounds(rect: Rect2) -> void:
