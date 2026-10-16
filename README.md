@@ -8,13 +8,22 @@ illumination marginalia.
 
 ## What works today
 
+- A painted knight with idle, walk, jump, attack, crouch, climb, hurt and death animations.
 - Running, fixed-height jumps, slopes, one-way platforms, Down+Jump to drop through them.
 - Ladders and ropes: grab with Up, climb down from the top with Down, jump off sideways.
 - Crouching, with a headroom check before standing.
-- Talking to NPCs; dialogue text lives in resources, not code.
-- A sword swing with a hit window, and a training dummy that takes damage.
-- Portals between two maps.
+- Saint Ysolde's Ford: a market town with five townsfolk, and meadow outskirts beyond the gate.
+- Marginalia creatures (snails, hares, hedgehogs) that wander, chase, attack, drop coins and ingredients, and respawn.
+- Health, knockback, invulnerability frames, death and respawn in the town square.
+- An inventory, pickups, and the quest "The Torn Psalter" with offer, progress tracking and turn-in.
+- Dialogue with choices; conversations change with the quest's state.
 - On-screen touch controls on phones, keyboard on desktop.
+
+## Art pipeline
+
+Every image is generated with Gemini in a smooth oil-painted Romanesque-marginalia style and cut out
+of a green screen; characters are animated by Veo from one base frame and cut into 12 fps sheets.
+See `tools/art/CONVENTIONS.md` for the recipe and `tools/art/ledger.csv` for what it cost.
 
 ## Layout
 
