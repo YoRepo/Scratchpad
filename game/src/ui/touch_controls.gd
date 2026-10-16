@@ -83,6 +83,12 @@ func _ready() -> void:
 	DebugBridge.register(&"touch_controls", debug_state)
 
 
+func _exit_tree() -> void:
+	for action: StringName in _held:
+		Input.action_release(action)
+	_held.clear()
+
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
 		_release_stick()

@@ -49,7 +49,7 @@ touch controls must keep working. Sessions do not share memory: read this file f
 | `game/src/world/prop.gd`, `parallax_backdrop.gd`, `ground_strip.gd` | Painted scenery: props from `assets/props/props.json`, parallax layers and ground strips from `assets/backdrops`. |
 | `game/content/items`, `mobs`, `quests`, `dialogue` | Data: every item, creature kind, quest and conversation. |
 | `game/assets/characters|creatures|npcs/<name>/` | Animation sheets + `character.json` produced by the art pipeline (`tools/art/CONVENTIONS.md`). |
-| `game/src/ui/hud.gd`, `dialogue_box.gd`, `touch_controls.gd` | HUD, dialogue UI, on-screen buttons (built from a table in code). |
+| `game/src/ui/hud.gd`, `dialogue_box.gd`, `touch_controls.gd` | HUD, dialogue UI, touch controls: a floating joystick (left 45% of the screen) plus JUMP/ATK/INTERACT thumb buttons, built in code; painted art is picked up from `assets/ui/*.png` when present. |
 | `game/content/levels/<name>/<name>.tscn` | Maps: `town` (the game) and `meadow` (the test level the browser tour uses via `?level=meadow`). |
 | `game/tests/headless_smoke.tscn` | In-engine integration test. `tools/web_smoke_test.js` is the browser test. |
 

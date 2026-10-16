@@ -4,10 +4,10 @@
 //   node tools/web_smoke_test.js [build-dir] [out-dir]
 //
 // Serves the build over HTTP and loads it in headless Chromium twice: a touch
-// phone driven through the on-screen buttons, and a keyboard desktop driven
-// through the keys. The desktop run tours every engine feature. Both runs read
-// the state the game publishes on window.__game. Screenshots land in out-dir.
-// Exit code 1 if any check fails.
+// phone driven through the virtual joystick and thumb buttons, and a keyboard
+// desktop driven through the keys. The desktop run tours every engine feature.
+// Both runs read the state the game publishes on window.__game. Screenshots
+// land in out-dir. Exit code 1 if any check fails.
 'use strict';
 
 const { chromium, devices } = require('playwright');
