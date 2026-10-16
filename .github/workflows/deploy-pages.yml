@@ -2,7 +2,7 @@ name: Build web & deploy to GitHub Pages
 
 on:
   push:
-    branches: ["claude/stoic-rubin-qc5l0w"]
+    branches: ["main", "claude/**"]
     paths:
       - "game/**"
       - ".github/workflows/deploy-pages.yml"
