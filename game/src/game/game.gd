@@ -4,7 +4,7 @@ extends Node
 ## level, and performs level transitions. Levels are content; this is the
 ## only place that loads or unloads them.
 
-@export_file("*.tscn") var first_level := "res://content/levels/meadow/meadow.tscn"
+@export_file("*.tscn") var first_level := "res://content/levels/town/town.tscn"
 @export var first_spawn: StringName = &"start"
 
 var level: Level
@@ -20,7 +20,7 @@ func _ready() -> void:
 	GameEvents.player_died.connect(_on_player_died)
 	_hud.setup(_player)
 	_camera.follow(_player)
-	change_level(first_level, first_spawn)
+	change_level(_requested_level(), first_spawn)
 	DebugBridge.register(&"game", debug_state)
 	var version: String = ProjectSettings.get_setting("application/config/version", "dev")
 	print("[boot] Scratchpad Side-Scroller v", version)
@@ -45,6 +45,19 @@ func debug_state() -> Dictionary:
 	if not is_instance_valid(level):
 		return {"level": "", "landmarks": {}}
 	return {"level": level.display_name, "landmarks": level.landmarks()}
+
+
+## On web, "?level=<name>" in the page URL picks content/levels/<name>/<name>.tscn
+## (the browser test tours the meadow while players get the town).
+func _requested_level() -> String:
+	if not OS.has_feature("web"):
+		return first_level
+	var search = JavaScriptBridge.eval("new URLSearchParams(location.search).get('level') || ''", true)
+	var name := String(search) if search != null else ""
+	if name.is_empty() or not name.is_valid_identifier():
+		return first_level
+	var path := "res://content/levels/%s/%s.tscn" % [name, name]
+	return path if ResourceLoader.exists(path) else first_level
 
 
 func _on_player_died() -> void:

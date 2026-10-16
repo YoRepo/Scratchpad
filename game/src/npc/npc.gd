@@ -8,8 +8,13 @@ const GROUP := &"npcs"
 @export var dialogue: DialogueData
 ## Optional quest this character gives and receives.
 @export var quest: QuestData
+## Folder with character.json + anim sheets (empty = placeholder figure).
+@export var animation_folder := ""
+## Painted sprites face right; placeholder faces right too.
+@export var faces_right := true
 
 @onready var _visual: Node2D = $Visual
+@onready var _character: CharacterVisual = $Character
 @onready var _name_label: Label = $NameLabel
 
 
@@ -18,6 +23,10 @@ func _ready() -> void:
 	add_to_group(GROUP)
 	prompt = "Talk to"
 	_name_label.text = display_name
+	if animation_folder != "" and _character.setup(animation_folder):
+		_visual.visible = false
+		_character.play(&"idle")
+		DialogueRunner.ended.connect(func() -> void: _character.play(&"idle"))
 
 
 func interact(player: Player) -> Result:
@@ -26,6 +35,8 @@ func interact(player: Player) -> Result:
 	var data: DialogueData = stage.get("data", dialogue)
 	if data == null or not DialogueRunner.start(data, self):
 		return Result.NONE
+	if _character.has(&"talk"):
+		_character.play(&"talk")
 	if stage.has("on_end"):
 		DialogueRunner.ended.connect(stage["on_end"], CONNECT_ONE_SHOT)
 	return Result.DIALOGUE
@@ -51,4 +62,6 @@ func _quest_stage() -> Dictionary:
 
 
 func face(target: Vector2) -> void:
-	_visual.scale.x = -1.0 if target.x < global_position.x else 1.0
+	var direction := -1.0 if target.x < global_position.x else 1.0
+	_visual.scale.x = direction
+	_character.set_facing(int(direction) if faces_right else -int(direction))

@@ -155,7 +155,7 @@ async function desktopTour(browser, base) {
   const drv = keyboardDriver(page);
   const shot = (name) => page.screenshot({ path: path.join(outDir, `desktop-${name}.png`) });
   try {
-    await page.goto(`${base}/index.html`, { waitUntil: 'load' });
+    await page.goto(`${base}/index.html?level=meadow`, { waitUntil: 'load' });
     let s = await waitFor(page, (g) => g.booted && g.level, 120000, 'boot');
     check('desktop: booted into the meadow', s.level === 'Marginalia Meadow', `level=${s.level} version=${s.version}`);
     check('desktop: no touchscreen detected', s.touch === false);
@@ -280,7 +280,7 @@ async function phoneScenario(browser, base) {
   const drv = touchDriver(page, cdp, () => latest.buttons);
   const shot = (name) => page.screenshot({ path: path.join(outDir, `phone-${name}.png`) });
   try {
-    await page.goto(`${base}/index.html`, { waitUntil: 'load' });
+    await page.goto(`${base}/index.html?level=meadow`, { waitUntil: 'load' });
     latest = await waitFor(page, (g) => g.booted && g.level, 120000, 'boot');
     check('phone: touchscreen detected', latest.touch === true);
     check('phone: seven touch buttons laid out', Object.keys(latest.buttons || {}).length === 7, Object.keys(latest.buttons || {}).join(','));

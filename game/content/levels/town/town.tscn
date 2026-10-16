@@ -1,0 +1,309 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://src/world/level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://src/world/backdrop.tscn" id="2_backdrop"]
+[ext_resource type="Script" path="res://src/world/parallax_backdrop.gd" id="3_parallax"]
+[ext_resource type="Script" path="res://src/world/foothold.gd" id="4_foothold"]
+[ext_resource type="Script" path="res://src/world/ground_strip.gd" id="5_strip"]
+[ext_resource type="Script" path="res://src/world/prop.gd" id="6_prop"]
+[ext_resource type="Script" path="res://src/world/climbable.gd" id="7_climbable"]
+[ext_resource type="PackedScene" path="res://src/npc/npc.tscn" id="8_npc"]
+[ext_resource type="PackedScene" path="res://src/mobs/mob.tscn" id="9_mob"]
+[ext_resource type="Resource" path="res://content/dialogue/anselm.tres" id="10_anselm"]
+[ext_resource type="Resource" path="res://content/quests/torn_psalter.tres" id="11_quest"]
+[ext_resource type="Resource" path="res://content/dialogue/town/hilde.tres" id="12_hilde"]
+[ext_resource type="Resource" path="res://content/dialogue/town/godric.tres" id="13_godric"]
+[ext_resource type="Resource" path="res://content/dialogue/town/oda.tres" id="14_oda"]
+[ext_resource type="Resource" path="res://content/dialogue/town/wat.tres" id="15_wat"]
+[ext_resource type="Resource" path="res://content/mobs/snail.tres" id="16_snail"]
+[ext_resource type="Resource" path="res://content/mobs/hare.tres" id="17_hare"]
+[ext_resource type="Resource" path="res://content/mobs/hedgehog.tres" id="18_hedgehog"]
+
+[node name="Town" type="Node2D"]
+script = ExtResource("1_level")
+display_name = "Saint Ysolde's Ford"
+bounds = Rect2(0, 0, 4400, 360)
+respawn_spawn = &"start"
+
+[node name="Backdrop" parent="." instance=ExtResource("2_backdrop")]
+top_color = Color(0.56, 0.68, 0.82, 1)
+bottom_color = Color(0.93, 0.88, 0.76, 1)
+
+[node name="Parallax" type="Node2D" parent="."]
+script = ExtResource("3_parallax")
+
+[node name="Footholds" type="Node2D" parent="."]
+
+[node name="GroundTown" type="StaticBody2D" parent="Footholds"]
+position = Vector2(0, 330)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 1900, 0, 1900, 40, 0, 40)
+one_way = false
+fill_color = Color(0.5, 0.46, 0.42, 1)
+top_color = Color(0.64, 0.6, 0.55, 1)
+
+[node name="TownStrip" type="Node2D" parent="Footholds/GroundTown"]
+script = ExtResource("5_strip")
+strip_name = &"ground_town"
+width = 1900.0
+
+[node name="GroundOutskirts" type="StaticBody2D" parent="Footholds"]
+position = Vector2(1900, 330)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 2500, 0, 2500, 40, 0, 40)
+one_way = false
+
+[node name="OutskirtsStrip" type="Node2D" parent="Footholds/GroundOutskirts"]
+script = ExtResource("5_strip")
+strip_name = &"ground_outskirts"
+width = 2500.0
+
+[node name="WallWest" type="StaticBody2D" parent="Footholds"]
+position = Vector2(-20, 0)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 20, 0, 20, 400, 0, 400)
+one_way = false
+fill_color = Color(0.3, 0.3, 0.32, 1)
+
+[node name="WallEast" type="StaticBody2D" parent="Footholds"]
+position = Vector2(4400, 0)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 20, 0, 20, 400, 0, 400)
+one_way = false
+fill_color = Color(0.3, 0.3, 0.32, 1)
+
+[node name="Hill" type="StaticBody2D" parent="Footholds"]
+position = Vector2(2600, 330)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 180, -64, 340, -64, 520, 0)
+one_way = false
+
+[node name="LedgeChurch" type="StaticBody2D" parent="Footholds"]
+position = Vector2(180, 200)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 150, 0, 150, 14, 0, 14)
+fill_color = Color(0.5, 0.46, 0.42, 1)
+top_color = Color(0.64, 0.6, 0.55, 1)
+
+[node name="LedgeInn" type="StaticBody2D" parent="Footholds"]
+position = Vector2(620, 250)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 180, 0, 180, 14, 0, 14)
+fill_color = Color(0.55, 0.36, 0.2, 1)
+
+[node name="LedgeA" type="StaticBody2D" parent="Footholds"]
+position = Vector2(2150, 240)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 200, 0, 200, 14, 0, 14)
+
+[node name="LedgeB" type="StaticBody2D" parent="Footholds"]
+position = Vector2(3400, 230)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 220, 0, 220, 14, 0, 14)
+
+[node name="LedgeC" type="StaticBody2D" parent="Footholds"]
+position = Vector2(3760, 150)
+script = ExtResource("4_foothold")
+points = PackedVector2Array(0, 0, 160, 0, 160, 14, 0, 14)
+
+[node name="Climbables" type="Node2D" parent="."]
+
+[node name="LadderInn" type="Area2D" parent="Climbables"]
+position = Vector2(760, 250)
+script = ExtResource("7_climbable")
+kind = 0
+length = 80.0
+
+[node name="RopeA" type="Area2D" parent="Climbables"]
+position = Vector2(2300, 240)
+script = ExtResource("7_climbable")
+kind = 1
+length = 90.0
+
+[node name="LadderB" type="Area2D" parent="Climbables"]
+position = Vector2(3560, 230)
+script = ExtResource("7_climbable")
+kind = 0
+length = 100.0
+
+[node name="RopeC" type="Area2D" parent="Climbables"]
+position = Vector2(3840, 150)
+script = ExtResource("7_climbable")
+kind = 1
+length = 80.0
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Church" type="Sprite2D" parent="Props"]
+position = Vector2(300, 330)
+script = ExtResource("6_prop")
+prop_name = &"church"
+
+[node name="StallA" type="Sprite2D" parent="Props"]
+position = Vector2(560, 330)
+script = ExtResource("6_prop")
+prop_name = &"stall_a"
+
+[node name="Inn" type="Sprite2D" parent="Props"]
+position = Vector2(820, 330)
+script = ExtResource("6_prop")
+prop_name = &"inn"
+
+[node name="Well" type="Sprite2D" parent="Props"]
+position = Vector2(1040, 330)
+script = ExtResource("6_prop")
+prop_name = &"well"
+
+[node name="HouseA" type="Sprite2D" parent="Props"]
+position = Vector2(1220, 330)
+script = ExtResource("6_prop")
+prop_name = &"house_a"
+
+[node name="HouseB" type="Sprite2D" parent="Props"]
+position = Vector2(1450, 330)
+script = ExtResource("6_prop")
+prop_name = &"house_b"
+mirrored = true
+
+[node name="StallB" type="Sprite2D" parent="Props"]
+position = Vector2(1620, 330)
+script = ExtResource("6_prop")
+prop_name = &"stall_b"
+
+[node name="Signpost" type="Sprite2D" parent="Props"]
+position = Vector2(1760, 330)
+script = ExtResource("6_prop")
+prop_name = &"signpost"
+
+[node name="Gate" type="Sprite2D" parent="Props"]
+position = Vector2(1900, 330)
+script = ExtResource("6_prop")
+prop_name = &"gate"
+
+[node name="Fence1" type="Sprite2D" parent="Props"]
+position = Vector2(2020, 330)
+script = ExtResource("6_prop")
+prop_name = &"fence"
+
+[node name="Oak1" type="Sprite2D" parent="Props"]
+position = Vector2(2420, 330)
+script = ExtResource("6_prop")
+prop_name = &"tree_oak"
+
+[node name="Bush1" type="Sprite2D" parent="Props"]
+position = Vector2(2250, 330)
+script = ExtResource("6_prop")
+prop_name = &"bush"
+
+[node name="Willow" type="Sprite2D" parent="Props"]
+position = Vector2(3250, 330)
+script = ExtResource("6_prop")
+prop_name = &"tree_willow"
+
+[node name="Bush2" type="Sprite2D" parent="Props"]
+position = Vector2(3040, 266)
+script = ExtResource("6_prop")
+prop_name = &"bush"
+
+[node name="Bridge" type="Sprite2D" parent="Props"]
+position = Vector2(3160, 330)
+script = ExtResource("6_prop")
+prop_name = &"bridge"
+
+[node name="Oak2" type="Sprite2D" parent="Props"]
+position = Vector2(3700, 330)
+script = ExtResource("6_prop")
+prop_name = &"tree_oak"
+mirrored = true
+
+[node name="Fence2" type="Sprite2D" parent="Props"]
+position = Vector2(4150, 330)
+script = ExtResource("6_prop")
+prop_name = &"fence"
+
+[node name="Oak3" type="Sprite2D" parent="Props"]
+position = Vector2(4300, 330)
+script = ExtResource("6_prop")
+prop_name = &"tree_oak"
+
+[node name="NPCs" type="Node2D" parent="."]
+
+[node name="Anselm" parent="NPCs" instance=ExtResource("8_npc")]
+position = Vector2(390, 330)
+dialogue = ExtResource("10_anselm")
+quest = ExtResource("11_quest")
+animation_folder = "res://assets/npcs/anselm"
+display_name = "Brother Anselm"
+
+[node name="Godric" parent="NPCs" instance=ExtResource("8_npc")]
+position = Vector2(610, 330)
+dialogue = ExtResource("13_godric")
+animation_folder = "res://assets/npcs/godric"
+display_name = "Godric"
+
+[node name="Hilde" parent="NPCs" instance=ExtResource("8_npc")]
+position = Vector2(900, 330)
+dialogue = ExtResource("12_hilde")
+animation_folder = "res://assets/npcs/hilde"
+display_name = "Hilde"
+
+[node name="Wat" parent="NPCs" instance=ExtResource("8_npc")]
+position = Vector2(1090, 330)
+dialogue = ExtResource("15_wat")
+animation_folder = "res://assets/npcs/wat"
+display_name = "Wat"
+
+[node name="Oda" parent="NPCs" instance=ExtResource("8_npc")]
+position = Vector2(1830, 330)
+dialogue = ExtResource("14_oda")
+animation_folder = "res://assets/npcs/oda"
+display_name = "Gatekeeper Oda"
+
+[node name="Mobs" type="Node2D" parent="."]
+
+[node name="Snail1" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(2120, 330)
+config = ExtResource("16_snail")
+
+[node name="Snail2" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(2480, 330)
+config = ExtResource("16_snail")
+
+[node name="Snail3" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(3320, 330)
+config = ExtResource("16_snail")
+
+[node name="Hare1" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(2250, 240)
+config = ExtResource("17_hare")
+
+[node name="Hare2" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(3020, 330)
+config = ExtResource("17_hare")
+
+[node name="Hare3" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(3960, 330)
+config = ExtResource("17_hare")
+
+[node name="Hedgehog1" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(2860, 266)
+config = ExtResource("18_hedgehog")
+
+[node name="Hedgehog2" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(3620, 330)
+config = ExtResource("18_hedgehog")
+
+[node name="Hedgehog3" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(4220, 330)
+config = ExtResource("18_hedgehog")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="Spawns"]
+position = Vector2(200, 330)
+
+[node name="gate" type="Marker2D" parent="Spawns"]
+position = Vector2(1860, 330)
+
+[node name="east" type="Marker2D" parent="Spawns"]
+position = Vector2(4000, 330)

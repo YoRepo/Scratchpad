@@ -11,7 +11,9 @@ var _failures := 0
 
 
 func _ready() -> void:
-	add_child(GAME_SCENE.instantiate())
+	var game: Game = GAME_SCENE.instantiate()
+	game.first_level = "res://content/levels/meadow/meadow.tscn"
+	add_child(game)
 	_run()
 
 
@@ -175,6 +177,16 @@ func _run() -> void:
 	await _press(InputActions.INTERACT)
 	await _frames(4)
 	_check("portal changes level", game.level.display_name == "Cloister", game.level.display_name)
+
+	# The town itself: loads, populated, the knight stands at the start.
+	game.change_level("res://content/levels/town/town.tscn", &"start")
+	await _frames(10)
+	var marks := game.level.landmarks()
+	_check("town loads with its townsfolk and creatures",
+		game.level.display_name == "Saint Ysolde's Ford" and marks["npcs"].size() == 5
+		and marks["mobs"].size() == 9, "npcs=%d mobs=%d" % [marks["npcs"].size(), marks["mobs"].size()])
+	_check("knight stands in the town square", player.is_on_floor() and _state(player) == &"Idle",
+		_state(player))
 
 	var verdict := "ALL CHECKS PASSED" if _failures == 0 else "%d CHECK(S) FAILED" % _failures
 	print("[headless] %s" % verdict)

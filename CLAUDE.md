@@ -41,9 +41,16 @@ touch controls must keep working. Sessions do not share memory: read this file f
 | `game/src/world/level.gd` | A map's root: `display_name`, `bounds`, spawns, landmarks for tests. |
 | `game/src/world/game_camera.gd` | Camera framing, smoothing, bounds. |
 | `game/src/game/game.gd` + `game.tscn` | Main scene: owns the player, camera, HUD, touch controls; loads levels. |
-| `game/src/dialogue/*` | `DialogueData` (resource), `DialogueRunner` (autoload), nothing else knows dialogue internals. |
+| `game/src/dialogue/*` | `DialogueData` (resource, with optional end choices), `DialogueRunner` (autoload), nothing else knows dialogue internals. |
+| `game/src/animation/*` | `SpriteSheetLoader` (reads a character folder's sheets) and `CharacterVisual` (plays them; origin = feet). |
+| `game/src/items/*` | `ItemData` + `ItemCatalog` (autoload), `Inventory` (autoload), `DropTable`, `Pickup`, `DropSpawner`. |
+| `game/src/mobs/*` | `MobConfig` (resource), `Mob` body, creature states (idle, wander, chase, attack, hurt, dead). |
+| `game/src/quests/*` | `QuestData` (resource) and `QuestLog` (autoload); NPCs ask it which conversation stage to run. |
+| `game/src/world/prop.gd`, `parallax_backdrop.gd`, `ground_strip.gd` | Painted scenery: props from `assets/props/props.json`, parallax layers and ground strips from `assets/backdrops`. |
+| `game/content/items`, `mobs`, `quests`, `dialogue` | Data: every item, creature kind, quest and conversation. |
+| `game/assets/characters|creatures|npcs/<name>/` | Animation sheets + `character.json` produced by the art pipeline (`tools/art/CONVENTIONS.md`). |
 | `game/src/ui/hud.gd`, `dialogue_box.gd`, `touch_controls.gd` | HUD, dialogue UI, on-screen buttons (built from a table in code). |
-| `game/content/levels/<name>/<name>.tscn` | Maps. `game/content/dialogue/*.tres` holds what NPCs say. |
+| `game/content/levels/<name>/<name>.tscn` | Maps: `town` (the game) and `meadow` (the test level the browser tour uses via `?level=meadow`). |
 | `game/tests/headless_smoke.tscn` | In-engine integration test. `tools/web_smoke_test.js` is the browser test. |
 
 ## Engine rules the game depends on
@@ -111,5 +118,6 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
   one-way footholds, ladders and ropes, crouch, slopes, a short sword swing (10 damage).
 - Setting: medieval; a knight; marginalia creatures (first one: a giant snail training dummy).
 - Maps: `meadow` (test level with every feature) and `cloister` (tiny second map) linked by portals.
-- Not started: art style, hero sprite and animations, real enemies with AI, knockback and invulnerability,
-  quests, inventory, skills, save games, sound. Discuss each with the owner before building.
+- Art: smooth oil-painted Romanesque marginalia; characters are Veo clips from one base frame (see tools/art/CONVENTIONS.md).
+- Done: the knight's painted animations, creatures with contact damage and loot, inventory, the Torn Psalter quest, the town map.
+- Not started: skills, shops, save games, more maps. Discuss each with the owner before building.

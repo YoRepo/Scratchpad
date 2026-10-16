@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Godric"
+lines = PackedStringArray("Bread, cloth, pots and the finest rumours in Saint Ysolde's Ford, all at honest prices.", "Honest-ish. Come back when you have coin, sir knight; I will have wares worth it.", "A hedgehog ate my best cheese last spring. I bear the whole species a grudge.")

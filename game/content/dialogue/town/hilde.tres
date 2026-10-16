@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Hilde"
+lines = PackedStringArray("Welcome to the Gilded Snail, sir knight. Mind your head on the beam, every knight does it.", "The ale is from the abbey and the bread is from Godric, which is to say it is stale by noon.", "If Brother Anselm has you chasing snails, bring back a shell for me too. They make a fine salt cellar.")

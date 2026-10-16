@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Wat"
+lines = PackedStringArray("Look, my snail goes on a string! It is faster than the real ones.", "Oda says I am not to go past the gate. I went anyway. A hare chased me all the way back.", "Are you a real knight? Can I hold the sword? No? Can I hold the shield?")

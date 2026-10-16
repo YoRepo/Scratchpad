@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Gatekeeper Oda"
+lines = PackedStringArray("East of this gate the margins begin. Snails that outweigh a dog, hares that bite, hedgehogs that roll like barrels.", "Jump when the hedgehog rolls. Strike the hare after it lands. The snail is slow, but its shell turns a blade.", "If you fall, you wake in the square. The saints keep this town, or so Anselm says.")
