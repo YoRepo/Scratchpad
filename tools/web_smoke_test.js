@@ -75,24 +75,67 @@ function keyboardDriver(page) {
   };
 }
 
-function touchDriver(page, cdp, buttons) {
-  const active = new Map(); // action -> {x, y, id}
-  let nextId = 1;
-  const points = () => [...active.values()].map((p) => ({ x: p.x, y: p.y, id: p.id }));
+// Touch driver for the joystick layout published on window.__game: `stick`
+// is the resting anchor and radius of the floating stick, `buttons` the
+// centres of JUMP/ATTACK/INTERACT. Directions are one finger (id 1) that lands
+// on the anchor and slides 0.9 radius toward the held direction(s); buttons
+// are extra fingers, so a button can be tapped while the stick is held. CDP
+// wants the full set of active touch points on every event and diffs them.
+function touchDriver(page, cdp, layout) {
+  const STICK_ID = 1;
+  const STICK_DIRS = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
+  const stickHeld = new Set();   // directions currently pushed on the stick
+  const buttonsHeld = new Map(); // action -> {x, y, id}
+  let stickDown = false;
+  let nextButtonId = 2;
+
+  const stickPoint = (dirs) => {
+    const { x, y, radius } = layout().stick;
+    let dx = 0, dy = 0;
+    for (const dir of dirs) { dx += STICK_DIRS[dir][0]; dy += STICK_DIRS[dir][1]; }
+    const len = Math.hypot(dx, dy) || 1;
+    return { x: x + (dx / len) * 0.9 * radius, y: y + (dy / len) * 0.9 * radius, id: STICK_ID };
+  };
+  const points = (dirs = stickHeld) => {
+    const pts = [...buttonsHeld.values()].map((p) => ({ x: p.x, y: p.y, id: p.id }));
+    if (stickDown) pts.push(stickPoint(dirs));
+    return pts;
+  };
+  const send = (type, dirs) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: points(dirs) });
+
   return {
     async hold(action) {
-      if (active.has(action)) return;
-      const b = buttons()[action];
+      if (action in STICK_DIRS) {
+        if (stickHeld.has(action)) return;
+        if (!stickDown) { stickDown = true; await send('touchStart', new Set()); }
+        stickHeld.add(action);
+        await send('touchMove');
+        return;
+      }
+      if (buttonsHeld.has(action)) return;
+      const b = layout().buttons[action];
       if (!b) throw new Error(`no touch button for ${action}`);
-      active.set(action, { x: b.x, y: b.y, id: nextId++ });
-      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: points() });
+      buttonsHeld.set(action, { x: b.x, y: b.y, id: nextButtonId++ });
+      await send('touchStart');
     },
     async release(action) {
-      if (!active.has(action)) return;
-      active.delete(action);
-      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: points() });
+      if (action in STICK_DIRS) {
+        if (!stickHeld.has(action)) return;
+        stickHeld.delete(action);
+        if (stickHeld.size > 0) { await send('touchMove'); return; }
+        stickDown = false;
+        await send('touchEnd');
+        return;
+      }
+      if (!buttonsHeld.has(action)) return;
+      buttonsHeld.delete(action);
+      await send('touchEnd');
     },
-    async releaseAll() { if (active.size === 0) return; active.clear(); await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); },
+    async releaseAll() {
+      if (!stickDown && buttonsHeld.size === 0) return;
+      stickHeld.clear(); stickDown = false; buttonsHeld.clear();
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    },
     async tap(action, ms = 60) { await this.hold(action); await sleep(ms); await this.release(action); },
   };
 }
@@ -267,7 +310,7 @@ async function desktopTour(browser, base) {
   }
 }
 
-// ---- Phone: touch buttons ------------------------------------------------------
+// ---- Phone: virtual joystick and thumb buttons ---------------------------------
 
 async function phoneScenario(browser, base) {
   console.log('\n== Phone (touch) scenario ==');
@@ -277,20 +320,41 @@ async function phoneScenario(browser, base) {
   });
   const cdp = await context.newCDPSession(page);
   let latest = null;
-  const drv = touchDriver(page, cdp, () => latest.buttons);
+  const drv = touchDriver(page, cdp, () => latest);
   const shot = (name) => page.screenshot({ path: path.join(outDir, `phone-${name}.png`) });
   try {
     await page.goto(`${base}/index.html?level=meadow`, { waitUntil: 'load' });
     latest = await waitFor(page, (g) => g.booted && g.level, 120000, 'boot');
     check('phone: touchscreen detected', latest.touch === true);
-    check('phone: seven touch buttons laid out', Object.keys(latest.buttons || {}).length === 7, Object.keys(latest.buttons || {}).join(','));
+    const buttons = Object.keys(latest.buttons || {}).sort().join(',');
+    check('phone: jump, attack and interact buttons laid out', buttons === 'attack,interact,jump', buttons);
+    const stick = latest.stick || {};
+    check('phone: joystick anchor and radius published', stick.radius > 20 && stick.x > 0 && stick.y > 0, JSON.stringify(stick));
+    check('phone: stick rests bottom-left, buttons sit bottom-right',
+      stick.x < PHONE_VIEWPORT.width * 0.3 && stick.y > PHONE_VIEWPORT.height * 0.5
+      && latest.buttons.jump.x > PHONE_VIEWPORT.width * 0.8 && latest.buttons.attack.x < latest.buttons.jump.x
+      && latest.buttons.interact.y < latest.buttons.jump.y,
+      `stick=${JSON.stringify(stick)} buttons=${JSON.stringify(latest.buttons)}`);
     check('phone: viewport expanded sideways', latest.viewport.w > latest.viewport.h, JSON.stringify(latest.viewport));
     await sleep(400);
     await shot('boot');
     const L = latest.landmarks;
 
-    let s = await walkTo(page, drv, L.npcs.Anselm.x - 12);
-    check('phone: d-pad walks to the monk', s.interactable === 'Brother Anselm', `x=${s.x} interactable=${s.interactable}`);
+    // Push the stick right: the knight runs at full speed, and a second finger
+    // can tap JUMP while the stick stays held.
+    await drv.hold('right');
+    let s = await waitFor(page, (g) => g.vx > 150, 2000, 'stick pushed right to run');
+    check('phone: stick pushed right runs at full speed', s.facing === 1 && s.state === 'Run', `vx=${s.vx} state=${s.state}`);
+    await shot('stick');
+    const jumpsAtStart = s.jumps;
+    await drv.tap('jump', 80);
+    s = await waitFor(page, (g) => g.jumps > jumpsAtStart, 2000, 'jump while the stick is held');
+    check('phone: JUMP works with a second finger while the stick is held', s.vx > 100, `vx=${s.vx}`);
+    await drv.releaseAll();
+    await waitFor(page, (g) => g.on_floor && g.state === 'Idle', 4000, 'land and settle');
+
+    s = await walkTo(page, drv, L.npcs.Anselm.x - 12);
+    check('phone: stick walks to the monk', s.interactable === 'Brother Anselm', `x=${s.x} interactable=${s.interactable}`);
     await drv.tap('interact');
     s = await waitFor(page, (g) => g.dialogue_active, 3000, 'dialogue via TALK button');
     check('phone: TALK button starts dialogue', true);
@@ -305,7 +369,7 @@ async function phoneScenario(browser, base) {
     s = await waitFor(page, (g) => g.state !== 'Climb', 6000, 'climb up by touch');
     await drv.release('up');
     s = await waitFor(page, (g) => g.on_floor, 3000, 'stand on platform');
-    check('phone: Up button climbs the ladder', Math.abs(s.y - ladder.top) < 2, `y=${s.y}`);
+    check('phone: Up on the stick climbs the ladder', Math.abs(s.y - ladder.top) < 2, `y=${s.y}`);
     await shot('ladder');
 
     const jumpsBefore = s.jumps;
@@ -319,7 +383,7 @@ async function phoneScenario(browser, base) {
     await waitFor(page, (g) => g.on_floor && g.state === 'Idle', 3000, 'settle');
     await drv.hold('down');
     s = await waitFor(page, (g) => g.state === 'Climb' || g.state === 'Crouch', 2000, 'down by touch');
-    check('phone: Down button crouches or grabs down', true, `state=${s.state}`);
+    check('phone: Down on the stick crouches or grabs down', true, `state=${s.state}`);
     await drv.releaseAll();
     await sleep(300);
     await shot('final');
