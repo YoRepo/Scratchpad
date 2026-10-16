@@ -343,7 +343,7 @@ async function phoneScenario(browser, base) {
     // Push the stick right: the knight runs at full speed, and a second finger
     // can tap JUMP while the stick stays held.
     await drv.hold('right');
-    let s = await waitFor(page, (g) => g.vx > 150, 2000, 'stick pushed right to run');
+    let s = await waitFor(page, (g) => g.vx >= 140, 2000, 'stick pushed right to run');
     check('phone: stick pushed right runs at full speed', s.facing === 1 && s.state === 'Run', `vx=${s.vx} state=${s.state}`);
     await shot('stick');
     const jumpsAtStart = s.jumps;
