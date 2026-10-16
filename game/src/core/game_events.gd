@@ -16,5 +16,8 @@ signal player_jumped
 signal player_landed
 signal player_attacked
 signal player_hurt
+signal player_footstep
+signal player_ladder_step
+signal panel_toggled(opened: bool)
 signal mob_hurt(mob: Mob)
 signal music_requested(track: StringName)

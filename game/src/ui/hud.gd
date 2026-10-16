@@ -4,11 +4,13 @@ extends CanvasLayer
 ## hint. The DialogueBox child manages itself.
 
 const TOAST_SECONDS := 2.2
+const HINT_SECONDS := 12.0
 
 var _player: Player
 var _level_name := ""
 var _prompt_text := ""
 var _toast_left := 0.0
+var _hint_left := HINT_SECONDS
 
 @onready var _title: Label = $Title
 @onready var _hint: Label = $Hint
@@ -59,11 +61,15 @@ func _process(delta: float) -> void:
 	if _toast_left > 0.0:
 		_toast_left -= delta
 		_toast.visible = _toast_left > 0.0
+	if _hint.visible and _hint_left > 0.0:
+		_hint_left -= delta
+		_hint.visible = _hint_left > 0.0
 
 
 func toggle_inventory() -> void:
 	_inventory_panel.visible = not _inventory_panel.visible
 	_refresh_inventory()
+	GameEvents.panel_toggled.emit(_inventory_panel.visible)
 
 
 func show_toast(text: String) -> void:

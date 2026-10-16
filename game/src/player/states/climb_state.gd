@@ -3,10 +3,14 @@ extends PlayerState
 ## gravity is off, and one-way footholds are ignored so the body can pass
 ## through the foothold a ladder leads to.
 
+const STEP_DISTANCE := 26.0
+
 var _climbable: Climbable
+var _travelled := 0.0
 
 
 func enter(_from: StringName) -> void:
+	_travelled = 0.0
 	var feet := player.global_position
 	_climbable = player.climb_detector.find_grab(feet)
 	if _climbable == null:
@@ -46,5 +50,12 @@ func physics_update(delta: float) -> StringName:
 			player.global_position.y = bottom
 			return AIR
 		y = bottom
+	_travelled += absf(y - player.global_position.y)
+	if _travelled >= STEP_DISTANCE:
+		_travelled = 0.0
+		GameEvents.player_ladder_step.emit()
 	player.global_position.y = y
+	player.visual.set_pose(
+		PlayerVisual.Pose.CLIMB if intent.move_y != 0.0 else PlayerVisual.Pose.CLIMB_PAUSED
+	)
 	return &""

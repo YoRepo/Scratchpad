@@ -8,10 +8,12 @@ const SFX := {
 	"mob_hurt": &"hit_enemy", "mob_shell": &"hit_shell", "mob_die": &"enemy_die",
 	"coin": &"coin", "item": &"item_pickup", "quest_accept": &"quest_accept",
 	"quest_complete": &"quest_complete", "blip": &"dialogue_blip", "ui_open": &"ui_open",
-	"ui_close": &"ui_close", "respawn": &"respawn",
+	"ui_close": &"ui_close", "respawn": &"respawn", "ladder": &"ladder_step",
 }
+const FOOTSTEPS: Array[StringName] = [&"footstep_1", &"footstep_2"]
 
 var _bank: Node
+var _step_index := 0
 
 
 func _ready() -> void:
@@ -20,6 +22,10 @@ func _ready() -> void:
 	GameEvents.player_landed.connect(func() -> void: _sfx("land"))
 	GameEvents.player_attacked.connect(func() -> void: _sfx("attack"))
 	GameEvents.player_hurt.connect(func() -> void: _sfx("hurt"))
+	GameEvents.player_footstep.connect(_on_footstep)
+	GameEvents.player_ladder_step.connect(func() -> void: _sfx("ladder"))
+	GameEvents.panel_toggled.connect(func(opened: bool) -> void:
+		_sfx("ui_open" if opened else "ui_close"))
 	GameEvents.player_respawned.connect(func() -> void: _sfx("respawn"))
 	GameEvents.mob_hurt.connect(_on_mob_hurt)
 	GameEvents.mob_killed.connect(func(_mob: Mob) -> void: _sfx("mob_die"))
@@ -38,6 +44,12 @@ func _ready() -> void:
 func play_music(track: StringName) -> void:
 	if _bank != null and _bank.has_method("play_music"):
 		_bank.play_music(track)
+
+
+func _on_footstep() -> void:
+	_step_index = (_step_index + 1) % FOOTSTEPS.size()
+	if _bank != null and _bank.has_method("play_sfx"):
+		_bank.play_sfx(FOOTSTEPS[_step_index], -6.0)
 
 
 func _on_mob_hurt(mob: Mob) -> void:
