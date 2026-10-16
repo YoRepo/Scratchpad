@@ -22,7 +22,8 @@ var _target: Node2D
 @onready var visual: Node2D = $Visual
 @onready var character: CharacterVisual = $Visual/Character
 @onready var placeholder: Node2D = $Visual/Placeholder
-@onready var name_label: Label = $NameLabel
+@onready var health_bar: FloatingHealthBar = $HealthBar
+@onready var name_label: Label = $HealthBar/NameLabel
 @onready var body_shape: CollisionShape2D = $BodyShape
 @onready var ledge_probe: RayCast2D = $LedgeProbe
 
@@ -120,7 +121,8 @@ func set_hurt_tint(active: bool) -> void:
 
 func set_visible_body(shown: bool) -> void:
 	visual.visible = shown
-	name_label.visible = shown
+	if not shown:
+		health_bar.hide_now()
 
 
 func drop_loot() -> void:
@@ -132,6 +134,7 @@ func respawn() -> void:
 	global_position = _spawn_position
 	velocity = Vector2.ZERO
 	health.restore()
+	health_bar.hide_now()
 	set_visible_body(true)
 	set_hostile(true)
 
@@ -152,7 +155,8 @@ func _on_died() -> void:
 
 
 func _on_health_changed(current: int, maximum: int) -> void:
-	name_label.text = "%s %d/%d" % [config.display_name, current, maximum]
+	if current < maximum:
+		health_bar.flash(float(current) / float(maximum))
 
 
 # --- Visual --------------------------------------------------------------------------
@@ -167,7 +171,8 @@ func visual_play(animation: StringName, restart := false) -> void:
 
 
 func _configure() -> void:
-	name_label.position.y = -config.world_height - 18.0
+	health_bar.position.y = -config.world_height - 12.0
+	name_label.text = config.display_name
 	health.max_hp = config.max_hp
 	health.hp = config.max_hp
 	_size_shape(body_shape, Vector2(config.world_width * 0.7, config.world_height))

@@ -96,7 +96,7 @@ func _select(index: int) -> void:
 	_selected = wrapi(index, 0, count)
 	for child_index in count:
 		var button := _choices.get_child(child_index) as Button
-		button.modulate = Color(1, 0.92, 0.6) if child_index == _selected else Color(1, 1, 1, 0.75)
+		button.modulate = Color(1, 0.9, 0.55) if child_index == _selected else Color(0.85, 0.8, 0.7, 0.9)
 
 
 func _clear_choices() -> void:

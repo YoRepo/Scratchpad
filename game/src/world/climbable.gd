@@ -21,8 +21,12 @@ const WIDTH := 12.0
 @export var exit_top := true
 
 
+var _painted := false
+
+
 func _ready() -> void:
 	add_to_group(GROUP)
+	_add_painting()
 	collision_layer = CollisionLayers.bit(CollisionLayers.CLIMBABLE)
 	collision_mask = 0
 	monitoring = false
@@ -43,7 +47,26 @@ func bottom_y() -> float:
 	return global_position.y + length
 
 
+## Uses the painted ladder or rope prop, scaled to the climb length, when it exists.
+func _add_painting() -> void:
+	var name_for_kind := "ladder" if kind == Kind.LADDER else "rope"
+	var texture := TextureFiles.load_texture("res://assets/props/%s.png" % name_for_kind)
+	if texture == null:
+		return
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.centered = false
+	var factor := length / float(texture.get_height())
+	sprite.scale = Vector2.ONE * factor
+	sprite.position = Vector2(-texture.get_width() * factor * 0.5, 0.0)
+	sprite.z_index = -1
+	add_child(sprite)
+	_painted = true
+
+
 func _draw() -> void:
+	if _painted:
+		return
 	match kind:
 		Kind.LADDER:
 			var wood := Color(0.55, 0.38, 0.2)

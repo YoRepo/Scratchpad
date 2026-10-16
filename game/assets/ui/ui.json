@@ -1,0 +1,86 @@
+{
+ "_note": "Keyed UI pieces, source pixels. nine_patch margins are uniform and lie just outside the ornament band so the centre stretches on plain parchment. hp_frame.fill_rect is the hollow interior [x0, y0, x1, y1] to draw the health fill in. button_interact.label_radius is the plain disc radius for the game's own text.",
+ "dialogue_frame": {
+  "file": "dialogue_frame.png",
+  "size": [
+   1253,
+   705
+  ],
+  "nine_patch": {
+   "left": 116,
+   "top": 116,
+   "right": 116,
+   "bottom": 116
+  }
+ },
+ "panel": {
+  "file": "panel.png",
+  "size": [
+   1134,
+   832
+  ],
+  "nine_patch": {
+   "left": 128,
+   "top": 128,
+   "right": 128,
+   "bottom": 128
+  }
+ },
+ "hp_frame": {
+  "file": "hp_frame.png",
+  "size": [
+   1274,
+   192
+  ],
+  "fill_rect": [
+   90,
+   26,
+   1184,
+   166
+  ]
+ },
+ "joystick_base": {
+  "file": "joystick_base.png",
+  "size": [
+   860,
+   858
+  ]
+ },
+ "joystick_knob": {
+  "file": "joystick_knob.png",
+  "size": [
+   228,
+   228
+  ]
+ },
+ "button_jump": {
+  "file": "button_jump.png",
+  "size": [
+   320,
+   320
+  ]
+ },
+ "button_attack": {
+  "file": "button_attack.png",
+  "size": [
+   320,
+   320
+  ]
+ },
+ "button_interact": {
+  "file": "button_interact.png",
+  "size": [
+   324,
+   324
+  ],
+  "label_radius": 61
+ },
+ "coin_hud": {
+  "file": "coin_hud.png",
+  "size": [
+   230,
+   232
+  ],
+  "note": "same image as items/coin.png"
+ }
+}

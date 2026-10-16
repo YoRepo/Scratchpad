@@ -33,7 +33,7 @@ touch controls must keep working. Sessions do not share memory: read this file f
 | `game/src/player/player_input.gd`, `player_intent.gd` | Input reading and the per-frame intent. |
 | `game/content/config/player_movement.tres` | Movement feel (`PlayerMovementConfig`). |
 | `game/src/player/climb_detector.gd`, `interactor.gd`, `hitbox.gd` | Player components for climbables, interactables, attacks. |
-| `game/src/player/player_visual.gd` | What the knight looks like (placeholder rectangles today). |
+| `game/src/player/player_visual.gd` | What the knight looks like: maps player states to the painted animations (`CharacterVisual`), falls back to rectangles. |
 | `game/src/world/foothold.gd` | Walkable geometry from a polygon: platforms, walls, hills. `one_way` makes it jump-through. |
 | `game/src/world/climbable.gd` | Ladders and ropes (`kind`, `length`, `exit_top`). |
 | `game/src/world/interactable.gd`, `portal.gd`, `npc/npc.gd` | Things the knight can act on; portals change level, NPCs talk. |
@@ -44,18 +44,23 @@ touch controls must keep working. Sessions do not share memory: read this file f
 | `game/src/dialogue/*` | `DialogueData` (resource, with optional end choices), `DialogueRunner` (autoload), nothing else knows dialogue internals. |
 | `game/src/animation/*` | `SpriteSheetLoader` (reads a character folder's sheets) and `CharacterVisual` (plays them; origin = feet). |
 | `game/src/items/*` | `ItemData` + `ItemCatalog` (autoload), `Inventory` (autoload), `DropTable`, `Pickup`, `DropSpawner`. |
-| `game/src/mobs/*` | `MobConfig` (resource), `Mob` body, creature states (idle, wander, chase, attack, hurt, dead). |
+| `game/src/mobs/*` | `MobConfig` (resource), `Mob` body, creature states (idle, wander, chase, attack, hurt, dead), `FloatingHealthBar` (pops up over a hurt creature, MapleStory style). |
 | `game/src/quests/*` | `QuestData` (resource) and `QuestLog` (autoload); NPCs ask it which conversation stage to run. |
-| `game/src/world/prop.gd`, `parallax_backdrop.gd`, `ground_strip.gd` | Painted scenery: props from `assets/props/props.json`, parallax layers and ground strips from `assets/backdrops`. |
+| `game/src/world/prop.gd`, `parallax_backdrop.gd`, `ground_strip.gd`, `ledge_skin.gd` | Painted scenery: props from `assets/props/props.json`; parallax layers (mirrored pairs, so they tile without seams) and ground strips from `assets/backdrops`. `GroundStrip` and `LedgeSkin` are children of a `Foothold`: the strip follows the foothold's walking surface (slopes included), the skin tiles a platform prop along a ledge; both call `set_painted` so the placeholder fill stops drawing. |
+| `game/src/core/texture_files.gd` | `TextureFiles.load_texture(path)`: the one place that resolves still art, preferring `.webp` over `.png`. |
 | `game/content/items`, `mobs`, `quests`, `dialogue` | Data: every item, creature kind, quest and conversation. |
 | `game/assets/characters|creatures|npcs/<name>/` | Animation sheets + `character.json` produced by the art pipeline (`tools/art/CONVENTIONS.md`). |
-| `game/src/ui/hud.gd`, `dialogue_box.gd`, `touch_controls.gd` | HUD, dialogue UI, touch controls: a floating joystick (left 45% of the screen) plus JUMP/ATK/INTERACT thumb buttons, built in code; painted art is picked up from `assets/ui/*.png` when present. |
+| `game/src/ui/hud.gd`, `dialogue_box.gd`, `touch_controls.gd` | HUD, dialogue UI, touch controls: a floating joystick (left 45% of the screen) plus JUMP/ATK/INTERACT thumb buttons, built in code; painted art is picked up from `assets/ui/*.webp` when present (`hud.gd` nine-slices the frames, `_small` variants are pre-scaled for the HUD). |
 | `game/content/levels/<name>/<name>.tscn` | Maps: `town` (the game) and `meadow` (the test level the browser tour uses via `?level=meadow`). |
 | `game/tests/headless_smoke.tscn` | In-engine integration test. `tools/web_smoke_test.js` is the browser test. |
 
 ## Engine rules the game depends on
 
 - Web export keeps `variant/thread_support=false` (GitHub Pages sends no cross-origin isolation headers).
+- Textures import as lossy WebP (`[importer_defaults]` in `project.godot`: `compress/mode=1`, quality
+  0.85; every `.import` sidecar under `assets/` says the same). Lossless import re-encodes each image as
+  PNG inside the pck and made the download 21 MB instead of 5 MB. `*reference.png` (the base frames
+  the Veo clips were made from) stays in git but is excluded from the export in `export_presets.cfg`.
 - `editor/export/convert_text_resources_to_binary=false` stays off: the export-time conversion
   dropped `PackedStringArray` exports from script resources (seen in 4.7.2 with dialogue `.tres`).
 - Renderer `gl_compatibility`; base viewport 640x360; stretch `canvas_items` + `expand`; nearest filtering.
@@ -109,8 +114,13 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
   Image models available as of October 2026: `gemini-3-pro-image`, `gemini-3.1-flash-image`,
   `gemini-3.1-flash-lite-image`, `gemini-2.5-flash-image`; video: `veo-3.1-*`. Confirm cost with the
   owner before bulk generation; keep generated sources out of git unless they are final assets.
-- No art pipeline exists yet; visuals are placeholder rectangles and `_draw()` shapes. Animated sprites
-  need frame-to-frame consistency that image models handle poorly: plan that pipeline with the owner.
+- The art pipeline lives in `tools/art/` and is documented in `tools/art/CONVENTIONS.md`: `gen.py`
+  (Gemini stills, writes `ledger.csv` and enforces per-tag spend caps), `video.py` (Veo clips from one
+  base frame), `frames.py` + `cycle.py` + `finalize_sheets.py` (green-screen keying, loop cutting,
+  WebP sheets), `still_to_sheet.py` (one-frame idles), `cutout.py` / `split.py` (props, icons),
+  `to_webp.py` (still art for shipping). Veo has a small daily quota: HTTP 429 means wait for the reset.
+- Music and sound effects are synthesised by `tools/audio/synth.py` (numpy, no samples) into
+  `assets/audio`; `SoundBank` plays them, `GameAudio` maps game events to cues.
 
 ## Design direction so far
 
@@ -119,5 +129,5 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
 - Setting: medieval; a knight; marginalia creatures (first one: a giant snail training dummy).
 - Maps: `meadow` (test level with every feature) and `cloister` (tiny second map) linked by portals.
 - Art: smooth oil-painted Romanesque marginalia; characters are Veo clips from one base frame (see tools/art/CONVENTIONS.md).
-- Done: the knight's painted animations, creatures with contact damage and loot, inventory, the Torn Psalter quest, the town map.
+- Done: the knight's painted animations, creatures with contact damage and loot, inventory, the Torn Psalter quest, the town map with painted backdrops, props, ground, ledges, ladders, parchment UI and item icons, synthesised music and SFX.
 - Not started: skills, shops, save games, more maps. Discuss each with the owner before building.

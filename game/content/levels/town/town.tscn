@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://src/world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://src/world/backdrop.tscn" id="2_backdrop"]
@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://content/mobs/hare.tres" id="17_hare"]
 [ext_resource type="Resource" path="res://content/mobs/hedgehog.tres" id="18_hedgehog"]
 [ext_resource type="Script" path="res://src/world/music_zone.gd" id="19_music"]
+[ext_resource type="Script" path="res://src/world/ledge_skin.gd" id="20_skin"]
 
 [node name="Town" type="Node2D"]
 script = ExtResource("1_level")
@@ -47,7 +48,6 @@ top_color = Color(0.64, 0.6, 0.55, 1)
 [node name="TownStrip" type="Node2D" parent="Footholds/GroundTown"]
 script = ExtResource("5_strip")
 strip_name = &"ground_town"
-width = 1900.0
 
 [node name="GroundOutskirts" type="StaticBody2D" parent="Footholds"]
 position = Vector2(1900, 330)
@@ -58,7 +58,6 @@ one_way = false
 [node name="OutskirtsStrip" type="Node2D" parent="Footholds/GroundOutskirts"]
 script = ExtResource("5_strip")
 strip_name = &"ground_outskirts"
-width = 2500.0
 
 [node name="WallWest" type="StaticBody2D" parent="Footholds"]
 position = Vector2(-20, 0)
@@ -80,6 +79,11 @@ script = ExtResource("4_foothold")
 points = PackedVector2Array(0, 0, 180, -64, 340, -64, 520, 0)
 one_way = false
 
+[node name="HillStrip" type="Node2D" parent="Footholds/Hill"]
+script = ExtResource("5_strip")
+strip_name = &"ground_outskirts"
+thickness = 70.0
+
 [node name="LedgeChurch" type="StaticBody2D" parent="Footholds"]
 position = Vector2(180, 200)
 script = ExtResource("4_foothold")
@@ -87,26 +91,51 @@ points = PackedVector2Array(0, 0, 150, 0, 150, 14, 0, 14)
 fill_color = Color(0.5, 0.46, 0.42, 1)
 top_color = Color(0.64, 0.6, 0.55, 1)
 
+[node name="Skin" type="Node2D" parent="Footholds/LedgeChurch"]
+script = ExtResource("20_skin")
+prop_name = &"platform_stone"
+width = 150.0
+
 [node name="LedgeInn" type="StaticBody2D" parent="Footholds"]
 position = Vector2(620, 250)
 script = ExtResource("4_foothold")
 points = PackedVector2Array(0, 0, 180, 0, 180, 14, 0, 14)
 fill_color = Color(0.55, 0.36, 0.2, 1)
 
+[node name="Skin" type="Node2D" parent="Footholds/LedgeInn"]
+script = ExtResource("20_skin")
+prop_name = &"platform_wood"
+width = 180.0
+
 [node name="LedgeA" type="StaticBody2D" parent="Footholds"]
 position = Vector2(2150, 240)
 script = ExtResource("4_foothold")
 points = PackedVector2Array(0, 0, 200, 0, 200, 14, 0, 14)
+
+[node name="Skin" type="Node2D" parent="Footholds/LedgeA"]
+script = ExtResource("20_skin")
+prop_name = &"platform_stone"
+width = 200.0
 
 [node name="LedgeB" type="StaticBody2D" parent="Footholds"]
 position = Vector2(3400, 230)
 script = ExtResource("4_foothold")
 points = PackedVector2Array(0, 0, 220, 0, 220, 14, 0, 14)
 
+[node name="Skin" type="Node2D" parent="Footholds/LedgeB"]
+script = ExtResource("20_skin")
+prop_name = &"platform_stone"
+width = 220.0
+
 [node name="LedgeC" type="StaticBody2D" parent="Footholds"]
 position = Vector2(3760, 150)
 script = ExtResource("4_foothold")
 points = PackedVector2Array(0, 0, 160, 0, 160, 14, 0, 14)
+
+[node name="Skin" type="Node2D" parent="Footholds/LedgeC"]
+script = ExtResource("20_skin")
+prop_name = &"platform_wood"
+width = 160.0
 
 [node name="Climbables" type="Node2D" parent="."]
 
@@ -203,7 +232,7 @@ script = ExtResource("6_prop")
 prop_name = &"tree_willow"
 
 [node name="Bush2" type="Sprite2D" parent="Props"]
-position = Vector2(3040, 266)
+position = Vector2(2800, 266)
 script = ExtResource("6_prop")
 prop_name = &"bush"
 

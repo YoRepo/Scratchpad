@@ -6,6 +6,7 @@ extends Area2D
 const GROUP := &"pickups"
 const GRAVITY := 900.0
 const LIFETIME := 45.0
+const ICON_SIZE := 22.0
 
 var coins := 0
 var item_id: StringName = &""
@@ -16,6 +17,8 @@ var _grounded := false
 var _age := 0.0
 
 @onready var _visual: Node2D = $Visual
+@onready var _disc: ColorRect = $Visual/Disc
+@onready var _icon: Sprite2D = $Visual/Icon
 @onready var _label: Label = $Visual/Label
 @onready var _floor_ray: RayCast2D = $FloorRay
 
@@ -72,6 +75,19 @@ func _on_body_entered(body: Node2D) -> void:
 
 func _apply_look() -> void:
 	var is_coin := coins > 0
+	var path := "res://assets/items/coin.png"
+	if not is_coin:
+		var item := ItemCatalog.get_item(item_id)
+		path = item.icon_path if item != null else ""
+	var texture := TextureFiles.load_texture(path) if path != "" else null
+	if texture != null:
+		_icon.texture = texture
+		_icon.scale = Vector2.ONE * (ICON_SIZE / float(texture.get_height()))
+		_icon.position = Vector2(0, -ICON_SIZE * 0.5)
+		_icon.visible = true
+		_disc.visible = false
+		_label.visible = false
+		return
 	_label.text = "¢" if is_coin else _item_short_name()
 	_visual.modulate = Color(1.0, 0.85, 0.3) if is_coin else Color.WHITE
 

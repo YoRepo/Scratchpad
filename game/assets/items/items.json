@@ -1,0 +1,51 @@
+{
+ "_note": "Keyed 1:1 item icons. 'fit' is the world-pixel length of the longest side (icons are 22 px in game); scale = fit / max(size).",
+ "coin": {
+  "file": "coin.png",
+  "size": [
+   230,
+   232
+  ],
+  "fit": 22
+ },
+ "snail_shell": {
+  "file": "snail_shell.png",
+  "size": [
+   272,
+   219
+  ],
+  "fit": 22
+ },
+ "hares_foot": {
+  "file": "hares_foot.png",
+  "size": [
+   123,
+   337
+  ],
+  "fit": 22
+ },
+ "hedgehog_quill": {
+  "file": "hedgehog_quill.png",
+  "size": [
+   249,
+   299
+  ],
+  "fit": 22
+ },
+ "illuminated_bookmark": {
+  "file": "illuminated_bookmark.png",
+  "size": [
+   197,
+   366
+  ],
+  "fit": 22
+ },
+ "psalter": {
+  "file": "psalter.png",
+  "size": [
+   375,
+   356
+  ],
+  "fit": 22
+ }
+}

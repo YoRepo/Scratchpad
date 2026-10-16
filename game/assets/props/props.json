@@ -1,0 +1,92 @@
+{
+  "bridge": {
+    "file": "bridge.png",
+    "height": 90,
+    "ground_inset": 3
+  },
+  "bush": {
+    "file": "bush.png",
+    "height": 40,
+    "ground_inset": 2
+  },
+  "church": {
+    "file": "church.png",
+    "height": 270,
+    "ground_inset": 2
+  },
+  "fence": {
+    "file": "fence.png",
+    "height": 40,
+    "ground_inset": 2
+  },
+  "gate": {
+    "file": "gate.png",
+    "height": 140,
+    "ground_inset": 3
+  },
+  "house_a": {
+    "file": "house_a.png",
+    "height": 150,
+    "ground_inset": 3
+  },
+  "house_b": {
+    "file": "house_b.png",
+    "height": 150,
+    "ground_inset": 2
+  },
+  "inn": {
+    "file": "inn.png",
+    "height": 210,
+    "ground_inset": 2
+  },
+  "ladder": {
+    "file": "ladder.png",
+    "height": 120,
+    "ground_inset": 2
+  },
+  "platform_stone": {
+    "file": "platform_stone.png",
+    "height": 40,
+    "ground_inset": 3
+  },
+  "platform_wood": {
+    "file": "platform_wood.png",
+    "height": 40,
+    "ground_inset": 3
+  },
+  "rope": {
+    "file": "rope.png",
+    "height": 120,
+    "ground_inset": 2
+  },
+  "signpost": {
+    "file": "signpost.png",
+    "height": 70,
+    "ground_inset": 2
+  },
+  "stall_a": {
+    "file": "stall_a.png",
+    "height": 80,
+    "ground_inset": 2
+  },
+  "stall_b": {
+    "file": "stall_b.png",
+    "height": 80,
+    "ground_inset": 2
+  },
+  "tree_oak": {
+    "file": "tree_oak.png",
+    "height": 220,
+    "ground_inset": 2
+  },
+  "tree_willow": {
+    "file": "tree_willow.png",
+    "height": 200,
+    "ground_inset": 2
+  },
+  "well": {
+    "file": "well.png",
+    "height": 60,
+    "ground_inset": 0
+  }
+}

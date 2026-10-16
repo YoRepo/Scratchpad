@@ -21,7 +21,7 @@ func _ready() -> void:
 	var entry: Dictionary = _catalog.get(String(prop_name), {})
 	var height: float = height_override if height_override > 0.0 else float(entry.get("height", 60.0))
 	var path: String = "res://assets/props/%s" % entry.get("file", "") if not entry.is_empty() else ""
-	var loaded := load(path) as Texture2D if path != "" and ResourceLoader.exists(path) else null
+	var loaded := TextureFiles.load_texture(path) if path != "" else null
 	if loaded == null:
 		_placeholder_size = Vector2(height * 0.8, height)
 		queue_redraw()

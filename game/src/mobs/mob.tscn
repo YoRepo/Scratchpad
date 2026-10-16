@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://src/mobs/mob.gd" id="1_mob"]
 [ext_resource type="Script" path="res://src/world/health.gd" id="2_health"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://src/mobs/states/mob_attack_state.gd" id="10_attack"]
 [ext_resource type="Script" path="res://src/mobs/states/mob_hurt_state.gd" id="11_hurt"]
 [ext_resource type="Script" path="res://src/mobs/states/mob_dead_state.gd" id="12_dead"]
+[ext_resource type="Script" path="res://src/mobs/floating_health_bar.gd" id="13_bar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(40, 40)
@@ -70,16 +71,20 @@ offset_bottom = -26.0
 mouse_filter = 2
 color = Color(0.1, 0.1, 0.1, 1)
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="HealthBar" type="Node2D" parent="."]
+position = Vector2(0, -52)
+script = ExtResource("13_bar")
+
+[node name="NameLabel" type="Label" parent="HealthBar"]
 offset_left = -60.0
-offset_top = -60.0
+offset_top = -20.0
 offset_right = 60.0
-offset_bottom = -44.0
+offset_bottom = -6.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.95)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 horizontal_alignment = 1
 
 [node name="StateMachine" type="Node" parent="."]
