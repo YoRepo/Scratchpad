@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/world/training_dummy.gd" id="1_dummy"]
+[ext_resource type="Script" path="res://src/world/health.gd" id="2_health"]
+[ext_resource type="Script" path="res://src/world/hurtbox.gd" id="3_hurtbox"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(28, 22)
+
+[node name="TrainingDummy" type="Node2D"]
+script = ExtResource("1_dummy")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_hp = 30
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("3_hurtbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visual"]
+offset_left = -14.0
+offset_top = -8.0
+offset_right = 10.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.82, 0.68, 0.46, 1)
+
+[node name="Shell" type="ColorRect" parent="Visual"]
+offset_left = -12.0
+offset_top = -22.0
+offset_right = 6.0
+offset_bottom = -6.0
+mouse_filter = 2
+color = Color(0.6, 0.32, 0.22, 1)
+
+[node name="ShellSpiral" type="ColorRect" parent="Visual"]
+offset_left = -8.0
+offset_top = -18.0
+offset_right = 2.0
+offset_bottom = -10.0
+mouse_filter = 2
+color = Color(0.82, 0.5, 0.34, 1)
+
+[node name="Eye" type="ColorRect" parent="Visual"]
+offset_left = 7.0
+offset_top = -14.0
+offset_right = 9.0
+offset_bottom = -8.0
+mouse_filter = 2
+color = Color(0.2, 0.15, 0.1, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -50.0
+offset_top = -38.0
+offset_right = 50.0
+offset_bottom = -22.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+
+[node name="RespawnTimer" type="Timer" parent="."]
+one_shot = true

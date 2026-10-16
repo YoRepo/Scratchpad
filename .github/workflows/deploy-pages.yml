@@ -1,10 +1,11 @@
-name: Build web & deploy to GitHub Pages
+name: Check, build web, deploy to GitHub Pages
 
 on:
   push:
     branches: ["main", "claude/**"]
     paths:
       - "game/**"
+      - "tools/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -22,7 +23,7 @@ env:
 
 jobs:
   build:
-    name: Export Godot web build
+    name: Lint, test, export
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -46,6 +47,11 @@ jobs:
             -d "$TDIR"
           ./godot --version
 
+      - name: Lint GDScript
+        run: |
+          pip install --quiet "gdtoolkit==4.*"
+          gdlint game/src game/tests
+
       - name: Stamp the build version with the commit
         run: |
           SHORT_SHA="${GITHUB_SHA::7}"
@@ -55,11 +61,32 @@ jobs:
       - name: Import project resources
         run: ./godot --headless --path game --import
 
+      - name: Headless engine test
+        run: ./godot --headless --path game tests/headless_smoke.tscn
+
       - name: Export web build
         run: |
           mkdir -p build/web
           ./godot --headless --path game --export-release "Web" "$GITHUB_WORKSPACE/build/web/index.html"
           ls -la build/web
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Browser smoke test
+        run: |
+          cd tools && npm install --no-audit --no-fund && npx playwright install --with-deps chromium && cd ..
+          node tools/web_smoke_test.js build/web build/smoke
+
+      - name: Keep smoke-test screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test
+          path: build/smoke
+          if-no-files-found: ignore
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,182 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
+[ext_resource type="Resource" path="res://content/config/player_movement.tres" id="2_config"]
+[ext_resource type="Script" path="res://src/player/climb_detector.gd" id="3_climb"]
+[ext_resource type="Script" path="res://src/player/interactor.gd" id="4_interactor"]
+[ext_resource type="Script" path="res://src/player/hitbox.gd" id="5_hitbox"]
+[ext_resource type="Script" path="res://src/player/player_visual.gd" id="6_visual"]
+[ext_resource type="Script" path="res://src/player/player_input.gd" id="7_input"]
+[ext_resource type="Script" path="res://src/player/state_machine.gd" id="8_machine"]
+[ext_resource type="Script" path="res://src/player/states/idle_state.gd" id="9_idle"]
+[ext_resource type="Script" path="res://src/player/states/run_state.gd" id="10_run"]
+[ext_resource type="Script" path="res://src/player/states/air_state.gd" id="11_air"]
+[ext_resource type="Script" path="res://src/player/states/crouch_state.gd" id="12_crouch"]
+[ext_resource type="Script" path="res://src/player/states/climb_state.gd" id="13_climb"]
+[ext_resource type="Script" path="res://src/player/states/attack_state.gd" id="14_attack"]
+[ext_resource type="Script" path="res://src/player/states/talk_state.gd" id="15_talk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stand"]
+size = Vector2(14, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crouch"]
+size = Vector2(14, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_climb"]
+size = Vector2(10, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interact"]
+size = Vector2(36, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
+size = Vector2(24, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_headroom"]
+size = Vector2(12, 12)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player")
+config = ExtResource("2_config")
+
+[node name="StandShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -15)
+shape = SubResource("RectangleShape2D_stand")
+
+[node name="CrouchShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_crouch")
+disabled = true
+
+[node name="CeilingCheck" type="ShapeCast2D" parent="."]
+position = Vector2(0, -24)
+enabled = false
+shape = SubResource("RectangleShape2D_headroom")
+target_position = Vector2(0, 0)
+collision_mask = 1
+
+[node name="FootholdProbe" type="RayCast2D" parent="."]
+position = Vector2(0, -1)
+target_position = Vector2(0, 6)
+collision_mask = 2
+
+[node name="ClimbDetector" type="Area2D" parent="."]
+script = ExtResource("3_climb")
+
+[node name="Shape" type="CollisionShape2D" parent="ClimbDetector"]
+position = Vector2(0, -15)
+shape = SubResource("RectangleShape2D_climb")
+
+[node name="Interactor" type="Area2D" parent="."]
+script = ExtResource("4_interactor")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactor"]
+position = Vector2(0, -20)
+shape = SubResource("RectangleShape2D_interact")
+
+[node name="Hitbox" type="Area2D" parent="."]
+position = Vector2(16, -20)
+script = ExtResource("5_hitbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_hit")
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("6_visual")
+
+[node name="Body" type="Node2D" parent="Visual"]
+
+[node name="Legs" type="ColorRect" parent="Visual/Body"]
+offset_left = -6.0
+offset_top = -8.0
+offset_right = 6.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.42, 0.44, 0.5, 1)
+
+[node name="LegGap" type="ColorRect" parent="Visual/Body"]
+offset_left = -1.0
+offset_top = -8.0
+offset_right = 1.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.25, 0.27, 0.32, 1)
+
+[node name="Tabard" type="ColorRect" parent="Visual/Body"]
+offset_left = -7.0
+offset_top = -19.0
+offset_right = 7.0
+offset_bottom = -8.0
+mouse_filter = 2
+color = Color(0.93, 0.9, 0.82, 1)
+
+[node name="CrossV" type="ColorRect" parent="Visual/Body"]
+offset_left = -1.0
+offset_top = -19.0
+offset_right = 1.0
+offset_bottom = -8.0
+mouse_filter = 2
+color = Color(0.72, 0.12, 0.12, 1)
+
+[node name="CrossH" type="ColorRect" parent="Visual/Body"]
+offset_left = -7.0
+offset_top = -15.0
+offset_right = 7.0
+offset_bottom = -13.0
+mouse_filter = 2
+color = Color(0.72, 0.12, 0.12, 1)
+
+[node name="Helm" type="ColorRect" parent="Visual/Body"]
+offset_left = -6.0
+offset_top = -31.0
+offset_right = 6.0
+offset_bottom = -19.0
+mouse_filter = 2
+color = Color(0.6, 0.62, 0.68, 1)
+
+[node name="Visor" type="ColorRect" parent="Visual/Body"]
+offset_left = 1.0
+offset_top = -27.0
+offset_right = 6.0
+offset_bottom = -25.0
+mouse_filter = 2
+color = Color(0.12, 0.12, 0.14, 1)
+
+[node name="Slash" type="ColorRect" parent="Visual/Body"]
+visible = false
+offset_left = 8.0
+offset_top = -28.0
+offset_right = 28.0
+offset_bottom = -12.0
+mouse_filter = 2
+color = Color(1, 0.95, 0.6, 0.8)
+
+[node name="PlayerInput" type="Node" parent="."]
+script = ExtResource("7_input")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("8_machine")
+initial_state = &"Idle"
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("9_idle")
+
+[node name="Run" type="Node" parent="StateMachine"]
+script = ExtResource("10_run")
+
+[node name="Air" type="Node" parent="StateMachine"]
+script = ExtResource("11_air")
+
+[node name="Crouch" type="Node" parent="StateMachine"]
+script = ExtResource("12_crouch")
+
+[node name="Climb" type="Node" parent="StateMachine"]
+script = ExtResource("13_climb")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("14_attack")
+
+[node name="Talk" type="Node" parent="StateMachine"]
+script = ExtResource("15_talk")
+
+[node name="DropTimer" type="Timer" parent="."]
+one_shot = true

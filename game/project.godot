@@ -11,10 +11,24 @@ config_version=5
 [application]
 
 config/name="Scratchpad Side-Scroller"
-config/version="0.1.0"
-run/main_scene="res://scenes/main.tscn"
+config/version="0.2.0"
+run/main_scene="res://src/game/game.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+InputActions="*res://src/core/input_actions.gd"
+GameEvents="*res://src/core/game_events.gd"
+DeviceInfo="*res://src/core/device_info.gd"
+DebugBridge="*res://src/core/debug_bridge.gd"
+DialogueRunner="*res://src/dialogue/dialogue_runner.gd"
+
+[editor]
+
+; Export-time text-to-binary conversion silently drops PackedStringArray exports
+; from script resources (seen in 4.7.2 with content/dialogue/*.tres), so it stays off.
+export/convert_text_resources_to_binary=false
 
 [display]
 
@@ -27,6 +41,15 @@ window/handheld/orientation=4
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
+
+[layer_names]
+
+2d_physics/layer_1="world_solid"
+2d_physics/layer_2="world_platform"
+2d_physics/layer_3="climbable"
+2d_physics/layer_4="interactable"
+2d_physics/layer_5="player"
+2d_physics/layer_6="hurtbox"
 
 [rendering]
 

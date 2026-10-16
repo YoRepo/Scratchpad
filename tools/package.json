@@ -1,0 +1,8 @@
+{
+  "name": "scratchpad-side-scroller-tools",
+  "private": true,
+  "description": "Browser smoke test for the exported web build (see web_smoke_test.js).",
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

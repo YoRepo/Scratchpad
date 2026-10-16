@@ -1,0 +1,141 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/world/level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://src/world/backdrop.tscn" id="2_backdrop"]
+[ext_resource type="Script" path="res://src/world/foothold.gd" id="3_foothold"]
+[ext_resource type="Script" path="res://src/world/climbable.gd" id="4_climbable"]
+[ext_resource type="PackedScene" path="res://src/npc/npc.tscn" id="5_npc"]
+[ext_resource type="Resource" path="res://content/dialogue/anselm.tres" id="6_anselm"]
+[ext_resource type="PackedScene" path="res://src/world/training_dummy.tscn" id="7_dummy"]
+[ext_resource type="PackedScene" path="res://src/world/portal.tscn" id="8_portal"]
+
+[node name="Meadow" type="Node2D"]
+script = ExtResource("1_level")
+display_name = "Marginalia Meadow"
+bounds = Rect2(0, 0, 2000, 360)
+
+[node name="Backdrop" parent="." instance=ExtResource("2_backdrop")]
+top_color = Color(0.33, 0.62, 0.93, 1)
+bottom_color = Color(0.9, 0.95, 1, 1)
+
+[node name="Decor" type="Node2D" parent="."]
+
+[node name="Trunk1" type="ColorRect" parent="Decor"]
+offset_left = 120.0
+offset_top = 230.0
+offset_right = 136.0
+offset_bottom = 330.0
+mouse_filter = 2
+color = Color(0.36, 0.24, 0.14, 1)
+
+[node name="Canopy1" type="ColorRect" parent="Decor"]
+offset_left = 80.0
+offset_top = 180.0
+offset_right = 176.0
+offset_bottom = 244.0
+mouse_filter = 2
+color = Color(0.22, 0.55, 0.26, 1)
+
+[node name="Trunk2" type="ColorRect" parent="Decor"]
+offset_left = 1600.0
+offset_top = 210.0
+offset_right = 1618.0
+offset_bottom = 330.0
+mouse_filter = 2
+color = Color(0.36, 0.24, 0.14, 1)
+
+[node name="Canopy2" type="ColorRect" parent="Decor"]
+offset_left = 1550.0
+offset_top = 150.0
+offset_right = 1668.0
+offset_bottom = 226.0
+mouse_filter = 2
+color = Color(0.2, 0.5, 0.24, 1)
+
+[node name="Footholds" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Footholds"]
+position = Vector2(0, 330)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 2000, 0, 2000, 30, 0, 30)
+one_way = false
+
+[node name="WallLeft" type="StaticBody2D" parent="Footholds"]
+position = Vector2(-20, 0)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 20, 0, 20, 360, 0, 360)
+one_way = false
+fill_color = Color(0.3, 0.3, 0.32, 1)
+
+[node name="WallRight" type="StaticBody2D" parent="Footholds"]
+position = Vector2(2000, 0)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 20, 0, 20, 360, 0, 360)
+one_way = false
+fill_color = Color(0.3, 0.3, 0.32, 1)
+
+[node name="Hill" type="StaticBody2D" parent="Footholds"]
+position = Vector2(700, 330)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 160, -80, 280, -80, 440, 0)
+one_way = false
+
+[node name="PlatformA" type="StaticBody2D" parent="Footholds"]
+position = Vector2(420, 264)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 160, 0, 160, 12, 0, 12)
+fill_color = Color(0.55, 0.36, 0.2, 1)
+
+[node name="PlatformB" type="StaticBody2D" parent="Footholds"]
+position = Vector2(1300, 200)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 160, 0, 160, 12, 0, 12)
+fill_color = Color(0.55, 0.36, 0.2, 1)
+
+[node name="PlatformC" type="StaticBody2D" parent="Footholds"]
+position = Vector2(1500, 270)
+script = ExtResource("3_foothold")
+points = PackedVector2Array(0, 0, 200, 0, 200, 12, 0, 12)
+fill_color = Color(0.55, 0.36, 0.2, 1)
+
+[node name="Climbables" type="Node2D" parent="."]
+
+[node name="LadderA" type="Area2D" parent="Climbables"]
+position = Vector2(500, 264)
+script = ExtResource("4_climbable")
+kind = 0
+length = 66.0
+
+[node name="RopeB" type="Area2D" parent="Climbables"]
+position = Vector2(1380, 200)
+script = ExtResource("4_climbable")
+kind = 1
+length = 130.0
+
+[node name="NPCs" type="Node2D" parent="."]
+
+[node name="Anselm" parent="NPCs" instance=ExtResource("5_npc")]
+position = Vector2(340, 330)
+dialogue = ExtResource("6_anselm")
+display_name = "Brother Anselm"
+
+[node name="Dummies" type="Node2D" parent="."]
+
+[node name="Snail" parent="Dummies" instance=ExtResource("7_dummy")]
+position = Vector2(1230, 330)
+
+[node name="Portals" type="Node2D" parent="."]
+
+[node name="ToCloister" parent="Portals" instance=ExtResource("8_portal")]
+position = Vector2(1900, 330)
+display_name = "Cloister"
+target_level = "res://content/levels/cloister/cloister.tscn"
+target_spawn = &"entrance"
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="Spawns"]
+position = Vector2(200, 330)
+
+[node name="from_cloister" type="Marker2D" parent="Spawns"]
+position = Vector2(1850, 330)

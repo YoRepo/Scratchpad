@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/npc/npc.gd" id="1_npc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_talk"]
+size = Vector2(44, 40)
+
+[node name="NPC" type="Area2D"]
+script = ExtResource("1_npc")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -20)
+shape = SubResource("RectangleShape2D_talk")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Robe" type="ColorRect" parent="Visual"]
+offset_left = -8.0
+offset_top = -24.0
+offset_right = 8.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.36, 0.26, 0.18, 1)
+
+[node name="Rope" type="ColorRect" parent="Visual"]
+offset_left = -8.0
+offset_top = -12.0
+offset_right = 8.0
+offset_bottom = -10.0
+mouse_filter = 2
+color = Color(0.8, 0.7, 0.45, 1)
+
+[node name="Head" type="ColorRect" parent="Visual"]
+offset_left = -6.0
+offset_top = -34.0
+offset_right = 6.0
+offset_bottom = -24.0
+mouse_filter = 2
+color = Color(0.96, 0.8, 0.64, 1)
+
+[node name="Tonsure" type="ColorRect" parent="Visual"]
+offset_left = -6.0
+offset_top = -35.0
+offset_right = 6.0
+offset_bottom = -32.0
+mouse_filter = 2
+color = Color(0.3, 0.2, 0.12, 1)
+
+[node name="Eye" type="ColorRect" parent="Visual"]
+offset_left = 2.0
+offset_top = -30.0
+offset_right = 4.0
+offset_bottom = -28.0
+mouse_filter = 2
+color = Color(0.1, 0.1, 0.1, 1)
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -52.0
+offset_right = 60.0
+offset_bottom = -36.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
