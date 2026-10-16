@@ -10,6 +10,8 @@ const CROUCH := &"Crouch"
 const CLIMB := &"Climb"
 const ATTACK := &"Attack"
 const TALK := &"Talk"
+const HURT := &"Hurt"
+const DIE := &"Die"
 
 var player: Player
 

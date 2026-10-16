@@ -4,3 +4,5 @@ extends RefCounted
 
 var damage := 0
 var source_position := Vector2.ZERO
+## Horizontal push given to the target, in world px/s (0 = none).
+var knockback := 0.0

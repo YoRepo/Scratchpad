@@ -4,7 +4,7 @@ extends PlayerState
 
 
 func enter(_from: StringName) -> void:
-	player.visual.set_pose(PlayerVisual.Pose.STAND)
+	player.visual.set_pose(PlayerVisual.Pose.JUMP)
 
 
 func physics_update(delta: float) -> StringName:

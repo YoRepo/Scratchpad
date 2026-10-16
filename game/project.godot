@@ -23,6 +23,9 @@ GameEvents="*res://src/core/game_events.gd"
 DeviceInfo="*res://src/core/device_info.gd"
 DebugBridge="*res://src/core/debug_bridge.gd"
 DialogueRunner="*res://src/dialogue/dialogue_runner.gd"
+ItemCatalog="*res://src/items/item_catalog.gd"
+Inventory="*res://src/items/inventory.gd"
+QuestLog="*res://src/quests/quest_log.gd"
 
 [editor]
 
@@ -50,9 +53,11 @@ pointing/emulate_touch_from_mouse=true
 2d_physics/layer_4="interactable"
 2d_physics/layer_5="player"
 2d_physics/layer_6="hurtbox"
+2d_physics/layer_7="player_hurtbox"
+2d_physics/layer_8="mob"
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/canvas_textures/default_texture_filter=0
+textures/canvas_textures/default_texture_filter=1

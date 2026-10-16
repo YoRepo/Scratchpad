@@ -6,6 +6,8 @@ extends Node2D
 @export var display_name := "Unnamed"
 ## World-space rectangle the camera may show.
 @export var bounds := Rect2(0, 0, 640, 360)
+## Spawn the knight wakes up at after being knocked out.
+@export var respawn_spawn: StringName = &"start"
 
 
 func spawn_position(spawn_name: StringName) -> Vector2:
@@ -18,7 +20,9 @@ func spawn_position(spawn_name: StringName) -> Vector2:
 
 ## Positions of notable things, for the browser smoke test to navigate by.
 func landmarks() -> Dictionary:
-	var out := {"npcs": {}, "climbables": {}, "portals": {}, "dummies": {}, "solids": {}, "spawns": {}}
+	var out := {
+		"npcs": {}, "climbables": {}, "portals": {}, "dummies": {}, "mobs": {}, "solids": {}, "spawns": {}
+	}
 	for node: Node2D in _own(NPC.GROUP):
 		out["npcs"][String(node.name)] = {"x": node.global_position.x, "y": node.global_position.y}
 	for node: Climbable in _own(Climbable.GROUP):
@@ -31,6 +35,12 @@ func landmarks() -> Dictionary:
 		}
 	for node: TrainingDummy in _own(TrainingDummy.GROUP):
 		out["dummies"][String(node.name)] = {"x": node.global_position.x, "hp": node.health.hp}
+	for node: Mob in _own(Mob.GROUP):
+		out["mobs"][String(node.name)] = {
+			"x": node.global_position.x,
+			"hp": node.health.hp,
+			"state": String(node.state_machine.state_name()),
+		}
 	for child in get_node("Footholds").get_children():
 		var foothold := child as Foothold
 		if foothold != null and not foothold.one_way:

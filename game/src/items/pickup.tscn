@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/items/pickup.gd" id="1_pickup"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 14.0
+
+[node name="Pickup" type="Area2D"]
+script = ExtResource("1_pickup")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="FloorRay" type="RayCast2D" parent="."]
+position = Vector2(0, -6)
+target_position = Vector2(0, 10)
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Disc" type="ColorRect" parent="Visual"]
+offset_left = -8.0
+offset_top = -16.0
+offset_right = 8.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.95, 0.8, 0.35, 1)
+
+[node name="Label" type="Label" parent="Visual"]
+offset_left = -30.0
+offset_top = -34.0
+offset_right = 30.0
+offset_bottom = -18.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.7)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1

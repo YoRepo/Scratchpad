@@ -1,0 +1,26 @@
+{
+ "name": "climb",
+ "frames": 10,
+ "columns": 10,
+ "width": 105,
+ "height": 239,
+ "fps": 12.0,
+ "loop": true,
+ "origin": [
+  55.15,
+  239.0
+ ],
+ "factor": 0.39967,
+ "source_frames": [
+  0,
+  2,
+  4,
+  5,
+  7,
+  9,
+  11,
+  13,
+  14,
+  16
+ ]
+}

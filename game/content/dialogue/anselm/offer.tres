@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Brother Anselm"
+lines = PackedStringArray("Sir knight, a calamity. The abbey's psalter fell into the ford and its binding is ruined.", "To mend it I need the old recipes: three snail shells to burn for lime, two hare's feet to dust the gold leaf, and five hedgehog quills to prick the parchment.", "The creatures of the margins keep all three, out past the east gate. Would you gather them for me?")
+choices = PackedStringArray("I will gather them", "Not now")

@@ -8,7 +8,9 @@ const WORLD_PLATFORM := 2   # one-way footholds you can jump up through
 const CLIMBABLE := 3        # ladder and rope areas
 const INTERACTABLE := 4     # NPCs, portals
 const PLAYER := 5
-const HURTBOX := 6          # things that can be hit by attacks
+const HURTBOX := 6          # creatures and dummies that the knight's attacks can hit
+const PLAYER_HURTBOX := 7   # the knight, hit by creature attacks
+const MOB := 8              # creature bodies: collide with the world, not with the knight
 
 
 static func bit(layer: int) -> int:

@@ -3,6 +3,9 @@ extends CharacterBody2D
 ## The knight's body: physics helpers and components. Behaviour is decided by
 ## the states under StateMachine; input is read only by PlayerInput.
 
+const GROUP := &"player"
+const INVULNERABLE_TIME := 1.0
+
 @export var config: PlayerMovementConfig
 
 var intent := PlayerIntent.new()
@@ -12,7 +15,10 @@ var jumps := 0
 var attacks := 0
 
 var _airborne_time := 0.0
+var _invulnerable_left := 0.0
 
+@onready var health: Health = $Health
+@onready var hurtbox: Hurtbox = $Hurtbox
 @onready var state_machine: StateMachine = $StateMachine
 @onready var input: PlayerInput = $PlayerInput
 @onready var visual: PlayerVisual = $Visual
@@ -27,6 +33,7 @@ var _airborne_time := 0.0
 
 
 func _ready() -> void:
+	add_to_group(GROUP)
 	collision_layer = CollisionLayers.bit(CollisionLayers.PLAYER)
 	collision_mask = CollisionLayers.bits(
 		[CollisionLayers.WORLD_SOLID, CollisionLayers.WORLD_PLATFORM]
@@ -37,6 +44,10 @@ func _ready() -> void:
 	drop_timer.one_shot = true
 	drop_timer.wait_time = config.drop_through_time
 	drop_timer.timeout.connect(func() -> void: set_platform_collision(true))
+	hurtbox.hit.connect(_on_hurtbox_hit)
+	health.changed.connect(func(current: int, maximum: int) -> void:
+		GameEvents.player_health_changed.emit(current, maximum))
+	health.died.connect(func() -> void: state_machine.change(PlayerState.DIE))
 	state_machine.start(self)
 	DebugBridge.register(&"player", debug_state)
 
@@ -49,6 +60,9 @@ func _physics_process(delta: float) -> void:
 	intent = input.read()
 	state_machine.physics_update(delta)
 	_airborne_time = 0.0 if is_on_floor() else _airborne_time + delta
+	if _invulnerable_left > 0.0:
+		_invulnerable_left = maxf(_invulnerable_left - delta, 0.0)
+		visual.set_blink(_invulnerable_left > 0.0)
 
 
 # --- Movement helpers used by the states -------------------------------------
@@ -129,6 +143,42 @@ func face_toward(axis: float) -> void:
 		set_facing(-1)
 
 
+# --- Combat -------------------------------------------------------------------
+
+
+func is_invulnerable() -> bool:
+	return _invulnerable_left > 0.0
+
+
+## Starts the hurt reaction: knockback away from the source and a short grace period.
+func take_hit(info: HitInfo) -> void:
+	if is_invulnerable() or health.hp <= 0:
+		return
+	health.damage(info.damage)
+	_invulnerable_left = INVULNERABLE_TIME
+	var away := signf(global_position.x - info.source_position.x)
+	if away == 0.0:
+		away = -facing
+	velocity = Vector2(away * info.knockback, -160.0)
+	if health.hp > 0:
+		state_machine.change(PlayerState.HURT)
+
+
+## Brings the knight back to life at a position, full health, idle.
+func respawn_at(position_in_world: Vector2) -> void:
+	global_position = position_in_world
+	velocity = Vector2.ZERO
+	health.restore()
+	_invulnerable_left = INVULNERABLE_TIME
+	set_facing(1)
+	state_machine.change(PlayerState.IDLE)
+	GameEvents.player_respawned.emit()
+
+
+func _on_hurtbox_hit(info: HitInfo) -> void:
+	take_hit(info)
+
+
 func debug_state() -> Dictionary:
 	var state := String(state_machine.state_name())
 	return {
@@ -143,6 +193,8 @@ func debug_state() -> Dictionary:
 		"jumps": jumps,
 		"attacks": attacks,
 		"interactable": interactor.focus_name(),
+		"hp": health.hp,
+		"max_hp": health.max_hp,
 		"presses": input.presses,
 		"interactions": interactor.interactions,
 		"interaction_result": interactor.last_result,

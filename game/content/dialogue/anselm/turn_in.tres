@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Brother Anselm"
+lines = PackedStringArray("Shells, feet and quills, every one. You have the makings of a bookbinder, sir knight.", "Take these coins from the abbey's purse, and this bookmark. I painted the little knight myself.", "The psalter will sing again by Sunday.")
+choices = PackedStringArray()

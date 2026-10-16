@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/quests/quest_data.gd" id="1_quest"]
+[ext_resource type="Resource" path="res://content/dialogue/anselm/offer.tres" id="2_offer"]
+[ext_resource type="Resource" path="res://content/dialogue/anselm/in_progress.tres" id="3_progress"]
+[ext_resource type="Resource" path="res://content/dialogue/anselm/turn_in.tres" id="4_turn_in"]
+[ext_resource type="Resource" path="res://content/dialogue/anselm/done.tres" id="5_done"]
+
+[resource]
+script = ExtResource("1_quest")
+id = &"torn_psalter"
+title = "The Torn Psalter"
+description = "Gather what Brother Anselm needs to rebind the abbey's psalter."
+giver_name = "Brother Anselm"
+required_items = {
+&"snail_shell": 3,
+&"hares_foot": 2,
+&"hedgehog_quill": 5
+}
+reward_coins = 50
+reward_item_id = &"illuminated_bookmark"
+reward_item_amount = 1
+offer = ExtResource("2_offer")
+in_progress = ExtResource("3_progress")
+turn_in = ExtResource("4_turn_in")
+done = ExtResource("5_done")

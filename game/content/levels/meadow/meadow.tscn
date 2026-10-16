@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://src/world/backdrop.tscn" id="2_backdrop"]
@@ -8,6 +8,9 @@
 [ext_resource type="Resource" path="res://content/dialogue/anselm.tres" id="6_anselm"]
 [ext_resource type="PackedScene" path="res://src/world/training_dummy.tscn" id="7_dummy"]
 [ext_resource type="PackedScene" path="res://src/world/portal.tscn" id="8_portal"]
+[ext_resource type="PackedScene" path="res://src/mobs/mob.tscn" id="9_mob"]
+[ext_resource type="Resource" path="res://content/mobs/snail.tres" id="10_snail"]
+[ext_resource type="Resource" path="res://content/quests/torn_psalter.tres" id="11_quest"]
 
 [node name="Meadow" type="Node2D"]
 script = ExtResource("1_level")
@@ -117,12 +120,19 @@ length = 130.0
 [node name="Anselm" parent="NPCs" instance=ExtResource("5_npc")]
 position = Vector2(340, 330)
 dialogue = ExtResource("6_anselm")
+quest = ExtResource("11_quest")
 display_name = "Brother Anselm"
 
 [node name="Dummies" type="Node2D" parent="."]
 
 [node name="Snail" parent="Dummies" instance=ExtResource("7_dummy")]
 position = Vector2(1230, 330)
+
+[node name="Mobs" type="Node2D" parent="."]
+
+[node name="Snail" parent="Mobs" instance=ExtResource("9_mob")]
+position = Vector2(1560, 330)
+config = ExtResource("10_snail")
 
 [node name="Portals" type="Node2D" parent="."]
 

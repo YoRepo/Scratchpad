@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/dialogue/dialogue_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+speaker = "Brother Anselm"
+lines = PackedStringArray("The margins crawl with those beasts east of the gate. Shells, hare's feet, quills: bring them when you have them all.", "Mind the hedgehogs. They roll.")
+choices = PackedStringArray()

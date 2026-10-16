@@ -88,6 +88,155 @@ text = "Rotate your phone to landscape"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Vitals" type="Control" parent="."]
+offset_left = 8.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 80.0
+mouse_filter = 2
+
+[node name="HpBar" type="Control" parent="Vitals"]
+offset_right = 150.0
+offset_bottom = 14.0
+mouse_filter = 2
+
+[node name="Back" type="ColorRect" parent="Vitals/HpBar"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.12, 0.08, 0.06, 0.8)
+
+[node name="Fill" type="ColorRect" parent="Vitals/HpBar"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+mouse_filter = 2
+color = Color(0.78, 0.16, 0.14, 1)
+
+[node name="Value" type="Label" parent="Vitals/HpBar"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.7)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Coins" type="Label" parent="Vitals"]
+offset_top = 16.0
+offset_right = 150.0
+offset_bottom = 32.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.7)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "0 coins"
+
+[node name="QuestTracker" type="VBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -230.0
+offset_top = 28.0
+offset_right = -8.0
+offset_bottom = 100.0
+grow_horizontal = 0
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="QuestTracker"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.6, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.7)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 2
+
+[node name="Lines" type="Label" parent="QuestTracker"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.7)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 2
+
+[node name="Toast" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 70.0
+offset_right = 220.0
+offset_bottom = 92.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.75)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+
+[node name="BagButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -66.0
+offset_top = 110.0
+offset_right = -8.0
+offset_bottom = 138.0
+grow_horizontal = 0
+focus_mode = 0
+text = "Bag"
+
+[node name="InventoryPanel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -90.0
+offset_right = 140.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Margin" type="MarginContainer" parent="InventoryPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Rows" type="VBoxContainer" parent="InventoryPanel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Heading" type="Label" parent="InventoryPanel/Margin/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = "Satchel"
+
+[node name="Items" type="Label" parent="InventoryPanel/Margin/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 11
+text = "Nothing yet."
+
 [node name="DialogueBox" type="PanelContainer" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
@@ -127,6 +276,13 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 12
 autowrap_mode = 3
+
+[node name="Choices" type="HBoxContainer" parent="DialogueBox/Margin/Rows"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+alignment = 1
 
 [node name="Hint" type="Label" parent="DialogueBox/Margin/Rows"]
 layout_mode = 2

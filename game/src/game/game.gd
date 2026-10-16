@@ -17,6 +17,7 @@ var level: Level
 
 func _ready() -> void:
 	GameEvents.level_change_requested.connect(_on_level_change_requested)
+	GameEvents.player_died.connect(_on_player_died)
 	_hud.setup(_player)
 	_camera.follow(_player)
 	change_level(first_level, first_spawn)
@@ -44,6 +45,12 @@ func debug_state() -> Dictionary:
 	if not is_instance_valid(level):
 		return {"level": "", "landmarks": {}}
 	return {"level": level.display_name, "landmarks": level.landmarks()}
+
+
+func _on_player_died() -> void:
+	if is_instance_valid(level):
+		_player.respawn_at(level.spawn_position(level.respawn_spawn))
+		_camera.snap_to_target()
 
 
 func _on_level_change_requested(path: String, spawn_name: StringName) -> void:

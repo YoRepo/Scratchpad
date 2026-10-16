@@ -5,3 +5,5 @@ extends Resource
 
 @export var speaker := ""
 @export_multiline var lines: PackedStringArray = []
+## Options offered after the last line (empty = none). The runner reports the pick.
+@export var choices: PackedStringArray = []

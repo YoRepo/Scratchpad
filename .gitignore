@@ -10,3 +10,4 @@ Thumbs.db
 
 # Test tooling
 tools/node_modules/
+tools/art/__pycache__/
