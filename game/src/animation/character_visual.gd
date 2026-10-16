@@ -6,10 +6,10 @@ extends Node2D
 
 signal finished(animation: StringName)
 
-var available := false
-
 const BREATH_AMOUNT := 0.012
 const BREATH_SPEED := 2.4
+
+var available := false
 
 var _sprite: AnimatedSprite2D
 var _set: SpriteSheetLoader.CharacterSet
