@@ -1,0 +1,24 @@
+{
+ "name": "armed_hurt",
+ "frames": 8,
+ "columns": 8,
+ "width": 391,
+ "height": 258,
+ "fps": 24.0,
+ "loop": false,
+ "origin": [
+  135.41,
+  258.8
+ ],
+ "factor": 0.40062,
+ "source_frames": [
+  4,
+  17,
+  30,
+  43,
+  55,
+  68,
+  81,
+  94
+ ]
+}

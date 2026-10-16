@@ -98,6 +98,15 @@ rotated puppet parts (dangling cloth needs real frames). Recipe:
    (`mirror_sheets.py`, which flips each cell and moves the origin); new knight clips start
    from `game/assets/characters/knight/reference.png`, the mirrored base, so they face right.
    Look at a sheet's first frame before shipping it: visor and feet point right, shield at the back.
+   The knight has two base frames: `reference.png` (sheathed: idle, walk, crouch, climb, hurt, die,
+   talk) and `armed_reference.png` (sword drawn, shield up: `armed_idle`, `armed_run`,
+   `armed_attack`, `armed_jump`, `armed_hurt`, `armed_die`, `armed_crouch`). The game picks the
+   set from the stance; sheet names carry the `armed_` prefix.
+   One-shot actions must fit the game action that plays them: cut them with
+   `cycle.py --mode once --fit-seconds <state duration> --fps 24` (attack 0.3 s, hurt 0.35 s,
+   die 2.4 s), so the whole motion is seen instead of its first tenth. A jump is not played but
+   chosen by phase: `jump_sheet.py` keeps rise, apex, fall and land frames and writes a `phases`
+   map; `PlayerVisual` shows the frame that matches the vertical speed.
    Neither model takes a negative prompt; fold negatives into the prompt.
 4. `frames.py clip.mp4 frames/ --fps 24 --scale 0.4 --origin 640,660 --name <anim>` keys the
    green and writes 24 fps frames at a fixed 0.4 scale so every clip of a character shares one

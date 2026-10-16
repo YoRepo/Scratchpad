@@ -28,21 +28,22 @@ touch controls must keep working. Sessions do not share memory: read this file f
 | `game/src/core/game_events.gd` | The global signal bus (autoload `GameEvents`). |
 | `game/src/core/device_info.gd` | Touch detection (autoload `DeviceInfo`). |
 | `game/src/core/debug_bridge.gd` | `window.__game` state for browser tests (autoload `DebugBridge`); systems register providers. |
-| `game/src/player/player.gd` + `player.tscn` | The knight's body: physics helpers, components, collision setup. |
+| `game/src/player/player.gd` + `player.tscn` | The knight's body: physics helpers, components, collision setup, and his **stance**: `UNARMED` in town (walks, climbs, talks, cannot jump or attack) or `ARMED` outside (runs, jumps, attacks). Zones set it. |
 | `game/src/player/states/*.gd` | Behaviour: Idle, Run, Air, Crouch, Climb, Attack, Talk. `PlayerState` holds shared transitions. |
 | `game/src/player/player_input.gd`, `player_intent.gd` | Input reading and the per-frame intent. |
 | `game/content/config/player_movement.tres` | Movement feel (`PlayerMovementConfig`). |
 | `game/src/player/climb_detector.gd`, `interactor.gd`, `hitbox.gd` | Player components for climbables, interactables, attacks. |
-| `game/src/player/player_visual.gd` | What the knight looks like: maps player states to the painted animations (`CharacterVisual`), falls back to rectangles. |
+| `game/src/player/player_visual.gd` | What the knight looks like: maps (stance, pose) to the painted animations (`armed_*` sheets when armed, sheathed sheets otherwise; climbing is always sheathed), drives the jump by phase frames (rise, apex, fall, land) from the vertical speed, holds the landing frame briefly. |
 | `game/src/world/foothold.gd` | Walkable geometry from a polygon: platforms, walls, hills. `one_way` makes it jump-through. |
 | `game/src/world/climbable.gd` | Ladders and ropes (`kind`, `length`, `exit_top`). |
 | `game/src/world/interactable.gd`, `portal.gd`, `npc/npc.gd` | Things the knight can act on; portals change level, NPCs talk. |
 | `game/src/world/health.gd`, `hurtbox.gd`, `hit_info.gd`, `training_dummy.gd` | Receiving side of combat. |
 | `game/src/world/level.gd` | A map's root: `display_name`, `bounds`, spawns, landmarks for tests. |
+| `game/src/world/zone.gd` | A region's rules as the knight walks in: the music track and the stance (town: unarmed, outskirts: armed). Levels without zones keep the armed default. |
 | `game/src/world/game_camera.gd` | Camera framing, smoothing, bounds. |
 | `game/src/game/game.gd` + `game.tscn` | Main scene: owns the player, camera, HUD, touch controls; loads levels. |
 | `game/src/dialogue/*` | `DialogueData` (resource, with optional end choices), `DialogueRunner` (autoload), nothing else knows dialogue internals. |
-| `game/src/animation/*` | `SpriteSheetLoader` (reads a character folder's sheets) and `CharacterVisual` (plays them; origin = feet). |
+| `game/src/animation/*` | `SpriteSheetLoader` (reads a character folder's sheets, including a sheet's optional `phases` map) and `CharacterVisual` (plays them or holds a phase frame; origin = feet). |
 | `game/src/items/*` | `ItemData` + `ItemCatalog` (autoload), `Inventory` (autoload), `DropTable`, `Pickup`, `DropSpawner`. |
 | `game/src/mobs/*` | `MobConfig` (resource), `Mob` body, creature states (idle, wander, chase, attack, hurt, dead), `FloatingHealthBar` (pops up over a hurt creature, MapleStory style). |
 | `game/src/quests/*` | `QuestData` (resource) and `QuestLog` (autoload); NPCs ask it which conversation stage to run. |
@@ -130,7 +131,7 @@ Environments) needs its deployment-branch rule to allow `claude/*`; only the own
 
 ## Design direction so far
 
-- Feel: MapleStory. Fixed-height jumps (`jump_velocity -430`, `gravity 1100`, `run_speed 150`),
+- Feel: MapleStory. Fixed-height jumps (`jump_velocity -410`, `gravity 1300`: about 62 px, snappy; `run_speed 150`, `walk_speed 110` in town),
   one-way footholds, ladders and ropes, crouch, slopes, a short sword swing (10 damage).
 - Setting: medieval; a knight; marginalia creatures (first one: a giant snail training dummy).
 - Maps: `meadow` (test level with every feature) and `cloister` (tiny second map) linked by portals.

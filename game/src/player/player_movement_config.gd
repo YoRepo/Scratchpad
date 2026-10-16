@@ -4,7 +4,10 @@ extends Resource
 ## Edit the values in content/config/player_movement.tres.
 
 @export_group("Ground")
+## Armed pace (outside town).
 @export var run_speed := 150.0
+## Unarmed pace (in town).
+@export var walk_speed := 110.0
 
 @export_group("Air")
 @export var gravity := 1100.0
@@ -25,6 +28,8 @@ extends Resource
 
 @export_group("Attack")
 @export var attack_duration := 0.3
-@export var attack_active_start := 0.05
-@export var attack_active_end := 0.2
+## The hitbox is live while the blade is extended in the armed_attack sheet (frames 4 to 7
+## of 9 at 30 fps); keep these in step with the sheet when it is recut.
+@export var attack_active_start := 0.13
+@export var attack_active_end := 0.25
 @export var attack_damage := 10

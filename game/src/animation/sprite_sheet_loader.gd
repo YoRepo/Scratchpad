@@ -9,6 +9,9 @@ extends RefCounted
 class CharacterSet:
 	var frames := SpriteFrames.new()
 	var origins: Dictionary = {}
+	## animation -> {phase name: [frame indices]} for sheets whose frames are picked by
+	## game state rather than played in order (a jump's rise, apex, fall and land).
+	var phases: Dictionary = {}
 	var scale := 1.0
 	var names: Array[StringName] = []
 
@@ -51,6 +54,8 @@ static func _add_animation(character_set: CharacterSet, folder: String, name: St
 		frames.add_frame(animation, atlas)
 	var origin: Array = meta.get("origin", [width / 2.0, height])
 	character_set.origins[animation] = Vector2(float(origin[0]), float(origin[1]))
+	if meta.has("phases"):
+		character_set.phases[animation] = meta["phases"]
 	return true
 
 

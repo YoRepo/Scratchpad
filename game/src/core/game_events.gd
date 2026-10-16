@@ -10,6 +10,7 @@ signal level_changed(level: Level)
 signal pickup_collected(pickup: Pickup)
 signal player_health_changed(current: int, maximum: int)
 signal player_died
+signal player_stance_changed(stance: int)
 signal player_respawned
 signal mob_killed(mob: Mob)
 signal player_jumped

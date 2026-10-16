@@ -46,6 +46,8 @@ def main() -> None:
     parser.add_argument("--max-period", type=float, default=2.0, help="seconds")
     parser.add_argument("--settle", type=float, default=0.0, help="once: distance below which the pose counts as settled (0 = auto)")
     parser.add_argument("--window", default="", help="only consider frames between these seconds, e.g. 2.5,6.5")
+    parser.add_argument("--fit-seconds", type=float, default=0.0,
+                        help="once: time-compress the kept motion to this many seconds (the game action's length)")
     parser.add_argument("--reverse", action="store_true",
                         help="play the kept frames backwards (a walk whose planted foot slides forward is a moonwalk)")
     parser.add_argument("--stop-at-peak", action="store_true",
@@ -86,8 +88,12 @@ def main() -> None:
         picked_idx = list(range(max(onset - 1, 0), end + 1))
         info = f"onset {onset}, peak {peak}, end {end}, threshold {threshold:.1f}"
 
-    # resample to the requested fps, capped
-    want = max(2, min(args.max_frames, int(round(len(picked_idx) * args.fps / src_fps))))
+    # resample to the requested fps, capped; --fit-seconds instead squeezes the whole motion
+    # into the game action's duration so every phase of it gets shown
+    if args.mode == "once" and args.fit_seconds > 0.0:
+        want = max(2, min(args.max_frames, int(round(args.fit_seconds * args.fps))))
+    else:
+        want = max(2, min(args.max_frames, int(round(len(picked_idx) * args.fps / src_fps))))
     positions = np.linspace(0, len(picked_idx) - 1, num=want, endpoint=(args.mode == "once"))
     chosen = [picked_idx[int(round(p))] for p in positions]
     if args.reverse:

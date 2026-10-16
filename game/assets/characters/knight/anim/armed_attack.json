@@ -1,0 +1,25 @@
+{
+ "name": "armed_attack",
+ "frames": 9,
+ "columns": 9,
+ "width": 296,
+ "height": 256,
+ "fps": 30.0,
+ "loop": false,
+ "origin": [
+  141.42,
+  256.8
+ ],
+ "factor": 0.40063,
+ "source_frames": [
+  7,
+  17,
+  26,
+  35,
+  45,
+  55,
+  64,
+  73,
+  83
+ ]
+}

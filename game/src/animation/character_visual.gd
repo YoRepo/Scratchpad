@@ -62,6 +62,27 @@ func current() -> StringName:
 	return _current
 
 
+## True when the animation's sheet names this phase (see SpriteSheetLoader.phases).
+func has_phase(animation: StringName, phase: StringName) -> bool:
+	return has(animation) and _set.phases.get(animation, {}).has(String(phase))
+
+
+## Holds one frame of a phase instead of playing the animation: index picks within the
+## phase's frames and is clamped, so 0 is its first frame and a large index its last.
+func show_phase(animation: StringName, phase: StringName, index := 0) -> void:
+	if not has_phase(animation, phase):
+		return
+	var frames: Array = _set.phases[animation][String(phase)]
+	if frames.is_empty():
+		return
+	if animation != _current:
+		_current = animation
+		_sprite.offset = -_set.origins[animation]
+		_sprite.animation = animation
+	_sprite.pause()
+	_sprite.frame = int(frames[clampi(index, 0, frames.size() - 1)])
+
+
 func set_paused(paused: bool) -> void:
 	if not available:
 		return

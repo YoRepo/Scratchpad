@@ -187,13 +187,19 @@ func _run() -> void:
 		and marks["mobs"].size() == 9, "npcs=%d mobs=%d" % [marks["npcs"].size(), marks["mobs"].size()])
 	_check("knight stands in the town square", player.is_on_floor() and _state(player) == &"Idle",
 		_state(player))
+	_check("town sheathes the sword", player.stance == Player.Stance.UNARMED)
+	var town_jumps := player.jumps
+	await _press(InputActions.JUMP)
+	await _frames(3)
+	_check("no jumping in town", player.jumps == town_jumps and player.is_on_floor(), _where(player))
 
 	# The ford: the bridge deck carries the knight over the stream, Down+Jump drops him
 	# into it, and a jump from the stream bed reaches the bank again. Creatures stand down.
 	for mob in get_tree().get_nodes_in_group(Mob.GROUP):
 		(mob as Mob).set_hostile(false)
-	player.global_position = Vector2(2900, 257)
+	player.global_position = Vector2(2900, 278)
 	await _frames(5)
+	_check("the outskirts arm the knight", player.stance == Player.Stance.ARMED)
 	Input.action_press(InputActions.MOVE_RIGHT)
 	for i in 200:
 		if player.global_position.x >= 3150.0:
@@ -202,7 +208,7 @@ func _run() -> void:
 	Input.action_release(InputActions.MOVE_RIGHT)
 	await _frames(5)
 	_check("bridge deck carries the knight over the ford",
-		player.is_on_floor() and player.global_position.y < 250.0
+		player.is_on_floor() and player.global_position.y < 272.0
 		and absf(player.global_position.x - 3160.0) < 40.0, _where(player))
 	Input.action_press(InputActions.MOVE_DOWN)
 	await _frames(3)

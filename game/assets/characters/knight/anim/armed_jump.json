@@ -1,0 +1,36 @@
+{
+ "name": "armed_jump",
+ "frames": 5,
+ "columns": 5,
+ "width": 178,
+ "height": 257,
+ "fps": 12.0,
+ "loop": false,
+ "origin": [
+  87.27,
+  256.2
+ ],
+ "factor": 0.40031,
+ "source_frames": [
+  53,
+  66,
+  80,
+  106,
+  107
+ ],
+ "phases": {
+  "rise": [
+   0
+  ],
+  "apex": [
+   1
+  ],
+  "fall": [
+   2
+  ],
+  "land": [
+   3,
+   4
+  ]
+ }
+}

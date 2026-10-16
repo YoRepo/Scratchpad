@@ -5,11 +5,16 @@
  "animations": [
   "idle",
   "walk",
-  "jump",
-  "attack",
   "crouch",
   "climb",
   "hurt",
-  "die"
+  "die",
+  "armed_idle",
+  "armed_run",
+  "armed_attack",
+  "armed_jump",
+  "armed_hurt",
+  "armed_die",
+  "armed_crouch"
  ]
 }

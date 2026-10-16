@@ -36,7 +36,7 @@ func grounded_transition() -> StringName:
 		return CLIMB
 	if intent.down_held:
 		return _down_transition()
-	return ATTACK if intent.attack_pressed else &""
+	return ATTACK if intent.attack_pressed and player.can_attack() else &""
 
 
 func _interaction_transition(intent: PlayerIntent) -> StringName:
@@ -50,10 +50,13 @@ func _interaction_transition(intent: PlayerIntent) -> StringName:
 	return &""
 
 
-## Down+Jump drops through a one-way foothold; otherwise it is a normal jump.
+## Down+Jump drops through a one-way foothold; otherwise it is a normal jump,
+## which only the armed stance allows (in town the knight keeps his feet down).
 func _jump_transition(intent: PlayerIntent) -> StringName:
 	if intent.down_held and player.try_drop_through():
 		return AIR
+	if not player.can_jump():
+		return &""
 	player.start_jump()
 	return AIR
 

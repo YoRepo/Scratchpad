@@ -1,0 +1,24 @@
+{
+ "name": "armed_crouch",
+ "frames": 8,
+ "columns": 8,
+ "width": 186,
+ "height": 223,
+ "fps": 12.0,
+ "loop": false,
+ "origin": [
+  98.31,
+  223.8
+ ],
+ "factor": 0.39964,
+ "source_frames": [
+  3,
+  7,
+  10,
+  14,
+  17,
+  21,
+  24,
+  28
+ ]
+}

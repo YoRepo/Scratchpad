@@ -3,6 +3,8 @@ extends CharacterBody2D
 ## The knight's body: physics helpers and components. Behaviour is decided by
 ## the states under StateMachine; input is read only by PlayerInput.
 
+enum Stance { UNARMED, ARMED }
+
 const GROUP := &"player"
 const INVULNERABLE_TIME := 1.0
 
@@ -10,6 +12,8 @@ const INVULNERABLE_TIME := 1.0
 
 var intent := PlayerIntent.new()
 var facing := 1
+## Armed outside town (run, jump, attack); unarmed inside (walk, climb, talk).
+var stance := Stance.ARMED
 ## Counters read by the browser smoke test.
 var jumps := 0
 var attacks := 0
@@ -77,7 +81,7 @@ func apply_gravity(delta: float) -> void:
 
 
 func apply_run(axis: float) -> void:
-	velocity.x = axis * config.run_speed
+	velocity.x = axis * move_speed()
 	face_toward(axis)
 
 
@@ -85,8 +89,31 @@ func apply_run(axis: float) -> void:
 func apply_air_control(axis: float) -> void:
 	if axis == 0.0 or config.air_control <= 0.0:
 		return
-	velocity.x = axis * config.run_speed * config.air_control
+	velocity.x = axis * move_speed() * config.air_control
 	face_toward(axis)
+
+
+## Walking pace when unarmed, running pace when armed.
+func move_speed() -> float:
+	return config.run_speed if stance == Stance.ARMED else config.walk_speed
+
+
+## Jumping and sword work need the armed stance; town is for walking and talking.
+func can_jump() -> bool:
+	return stance == Stance.ARMED
+
+
+func can_attack() -> bool:
+	return stance == Stance.ARMED
+
+
+## Zones call this as the knight crosses them; the visual swaps its sheet set.
+func set_stance(value: Stance) -> void:
+	if value == stance:
+		return
+	stance = value
+	visual.set_stance(value)
+	GameEvents.player_stance_changed.emit(value)
 
 
 func start_jump() -> void:
@@ -101,7 +128,7 @@ func can_coyote_jump() -> bool:
 
 
 func jump_off_climbable(axis: float) -> void:
-	velocity.x = axis * config.run_speed
+	velocity.x = axis * move_speed()
 	velocity.y = config.climb_jump_velocity
 	face_toward(axis)
 	jumps += 1
@@ -194,6 +221,7 @@ func debug_state() -> Dictionary:
 		"vy": snappedf(velocity.y, 0.1),
 		"on_floor": is_on_floor(),
 		"facing": facing,
+		"stance": "armed" if stance == Stance.ARMED else "unarmed",
 		"state": state,
 		"attacking": state == String(PlayerState.ATTACK),
 		"jumps": jumps,
