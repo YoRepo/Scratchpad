@@ -168,6 +168,8 @@ func visual_play(animation: StringName, restart := false) -> void:
 
 func _configure() -> void:
 	name_label.position.y = -config.world_height - 18.0
+	health.max_hp = config.max_hp
+	health.hp = config.max_hp
 	_size_shape(body_shape, Vector2(config.world_width * 0.7, config.world_height))
 	_size_shape(hurtbox.get_node("Shape"), Vector2(config.world_width * 0.9, config.world_height))
 	var contact_size := Vector2(config.world_width * 0.8, config.world_height * 0.9)
